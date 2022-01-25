@@ -3,6 +3,7 @@ const express = require("express");
 const Router = express.Router();
 const { google } = require("googleapis");
 const User = require("./../models/userModel");
+const CompleteClass = require("./../models/CompleteClass");
 const axios = require("axios");
 
 
@@ -125,18 +126,7 @@ Router.get("/courseList/:email", async (req, resp, next) => {
   // const authClient = await auth.getClient(req.params.accessToken);
   // google.options({ auth: authClient });
 
-  // const res = await classroom.courses.list({
-  // Restricts returned courses to those in one of the specified states The default value is ACTIVE, ARCHIVED, PROVISIONED, DECLINED.
-  //courseStates: "placeholder-value",
-  // Maximum number of items to return. Zero or unspecified indicates that the server may assign a maximum. The server may return fewer than the specified number of results.
-  //pageSize: "placeholder-value",
-  // nextPageToken value returned from a previous list call, indicating that the subsequent page of results should be returned. The list request must be otherwise identical to the one that resulted in this token.
-  //pageToken: "placeholder-value",
-  // Restricts returned courses to those having a student with the specified identifier. The identifier can be one of the following: * the numeric identifier for the user * the email address of the user * the string literal `"me"`, indicating the requesting user
-  // studentId: "placeholder-value",
-  // Restricts returned courses to those having a teacher with the specified identifier. The identifier can be one of the following: * the numeric identifier for the user * the email address of the user * the string literal `"me"`, indicating the requesting user
-  // teacherId: "me",
-  // });
+
   // console.log(res.data);
   // const resp = await axios.get
   resp.json(res.data);
@@ -145,5 +135,66 @@ Router.get("/courseList/:email", async (req, resp, next) => {
   //   next(error);
   // }
 });
+
+Router.get("/createCompleteClass/:email/:courseId/:courseName/:ac_t", async (req, resp, next) => {
+
+  const email9 = req.params.email;
+
+
+  var RefreshToken = null;
+  ac_t = req.params.ac_t;
+  //console.log(req.params.courseId);
+
+  const func2 = async () =>{
+    //console.log(RefreshToken , ac_t);
+
+    oauth2Client.setCredentials({
+      refresh_token: RefreshToken,
+      access_token: ac_t,
+    });
+
+    //var currentClass = await 
+    CompleteClass.find({ courseId: req.params.courseId }).then((currentClass)=>{
+      if (currentClass.length < 1) {
+          var class1 = {
+            name: req.params.courseName,
+            courseId: req.params.courseId,
+            totalDuration: 0,
+            StudentsData: [],
+          };
+        //const res = 
+        classroom.courses.students.list({
+          courseId: `${req.params.courseId}`,
+        }).then((res)=>{
+          //console.log(res.data.students[0].profile);
+          const students = res.data.students;
+          for(let x = 0 ; x<students.length ; x++)
+          {
+            class1.StudentsData.push(
+              {
+                name: students[x].profile.name.fullName,
+                duration: 0,
+                email: students[x].profile.emailAddress,
+              }
+            );
+          }
+          CompleteClass.create(class1);
+        })
+
+    }
+   })
+  }
+
+  //var currentUser = await 
+  User.findOne({ email: email9 }).then((currentUser)=>{
+    RefreshToken = currentUser.refreshToken;
+    func2();
+  });
+
+});
+
+
+
+
 
 module.exports = Router;

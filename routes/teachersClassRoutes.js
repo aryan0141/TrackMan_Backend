@@ -1,6 +1,7 @@
 const express = require("express");
 const Router = express.Router();
 const User = require("./../models/userModel");
+const CompleteClass = require("./../models/CompleteClass");
 
 const axios = require("axios");
 
@@ -47,25 +48,26 @@ Router.get("/courseList/:email", async (req, resp, next) => {
     // const authClient = await auth.getClient(req.params.accessToken);
     // google.options({ auth: authClient });
 
-    // const res = await classroom.courses.list({
-    // Restricts returned courses to those in one of the specified states The default value is ACTIVE, ARCHIVED, PROVISIONED, DECLINED.
-    //courseStates: "placeholder-value",
-    // Maximum number of items to return. Zero or unspecified indicates that the server may assign a maximum. The server may return fewer than the specified number of results.
-    //pageSize: "placeholder-value",
-    // nextPageToken value returned from a previous list call, indicating that the subsequent page of results should be returned. The list request must be otherwise identical to the one that resulted in this token.
-    //pageToken: "placeholder-value",
-    // Restricts returned courses to those having a student with the specified identifier. The identifier can be one of the following: * the numeric identifier for the user * the email address of the user * the string literal `"me"`, indicating the requesting user
-    // studentId: "placeholder-value",
-    // Restricts returned courses to those having a teacher with the specified identifier. The identifier can be one of the following: * the numeric identifier for the user * the email address of the user * the string literal `"me"`, indicating the requesting user
-    // teacherId: "me",
-    // });
-    // console.log(res.data);
-    // const resp = await axios.get
+  
     resp.json(res);
     // resp.send(res.data);
   // } catch (error) {
   //   next(error);
   // }
+});
+
+
+Router.get("/teachersClass/:courseId", async (req, resp, next) => {
+  try {
+  const courseId = req.params.courseId;
+  
+  const currentClass = await CompleteClass.findOne({ courseId: courseId });
+  
+
+  resp.json(currentClass);
+   } catch (error) {
+    next(error);
+  }
 });
 
 module.exports = Router;
