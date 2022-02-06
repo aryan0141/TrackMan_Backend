@@ -43,11 +43,12 @@ Router.post("/create-tokens", async (req, res, next) => {
         accessToken: tokens.access_token,
         refreshToken: tokens.refresh_token,
       };
+      console.log("Refresh Toeken", tokens.refresh_token);
       const resp = await axios.get(
         `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${code1.accessToken}`
       );
       // const resp =  await func1(code1);
-      console.log(resp);
+      //console.log(resp);
 
       const user2 = {
         name: resp.data.name,
@@ -57,7 +58,26 @@ Router.post("/create-tokens", async (req, res, next) => {
         picture: resp.data.picture,
         refreshToken: code1.refreshToken,
       };
-      User.create(user2);
+      User.findOne({ email: user2.email}, function(err , existingUser){
+        if(existingUser == null){
+          console.log("New User")
+          User.create(user2);
+        }else{
+          // console.log("Already exist");
+          // console.log(existingUser._id);
+          User.findByIdAndUpdate( existingUser._id , {
+            refreshToken: user2.refreshToken
+          },function (err, docs) {
+        if (err) {
+          console.log("Error happened");
+        } else {
+          console.log("success");
+        }}
+          
+          );
+        }
+      })
+      //User.create(user2);
 
       user3.name = resp.data.name;
       user3.firstName = resp.data.given_name;

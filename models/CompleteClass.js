@@ -24,7 +24,7 @@ const CompleteClassSchema = new mongoose.Schema({
         default: 0
     },
 
-    StudentsData: [{ email: String, duration: Number, classesAttended: { type: Number, default: 0} , name: String,}]
+    StudentsData: [{ email: String, duration: Number,comments: { type: Number, default: 0 },  classesAttended: { type: Number, default: 0} , name: String,}]
 
 });
 

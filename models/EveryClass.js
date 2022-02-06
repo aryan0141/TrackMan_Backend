@@ -14,7 +14,7 @@ const everyClassSchema = new mongoose.Schema({
     // unique: true,
     lowercase: true,
   },
-  arrOfStudents: [{name: String ,email: String , duration: String}]
+  arrOfStudents: [{name: String , firstName: String , lastName: String, email: String , duration: String}]
 
 });
 
@@ -22,9 +22,9 @@ const everyClassSchema = new mongoose.Schema({
 everyClassSchema.statics.calcAverageRatings = async function (className , arrOfStudents) {
 
   completeClass.findOne({name: className}).then( (classFound) =>{
-    console.log(classFound);
-    console.log("SPACE")
-    console.log(arrOfStudents);
+    // console.log(classFound);
+
+    // console.log(arrOfStudents);
 
     var maxDur = 0;
 
@@ -43,15 +43,17 @@ everyClassSchema.statics.calcAverageRatings = async function (className , arrOfS
             const time5 = time2.split("hr")[1];
             const time6 = Number(time5.split("min")[0]);
             time3 = time3 + time6;
-          } else {
+          } else if(time2.includes("min")) {
             const time7 = Number(time2.split("min")[0]);
             time3 = time3 + time7;
+          }else{
+            time3 = 0;;
           }
 
           if (time3 > maxDur) {
             maxDur = time3;
           }
-          console.log(time3);
+          //console.log(time3);
           classFound.StudentsData[y].duration = classFound.StudentsData[y].duration + time3;
           classFound.StudentsData[y].classesAttended = classFound.StudentsData[y].classesAttended + 1;
           //obj.duration = obj.duration + time3;
@@ -63,8 +65,8 @@ everyClassSchema.statics.calcAverageRatings = async function (className , arrOfS
     classFound.totalClasses = classFound.totalDuration+1;
     classFound.totalDuration = classFound.totalDuration + maxDur;
     //console.log(" HI" , classFound.id);
-    console.log(classFound._id);
-    console.log(classFound);
+    // console.log(classFound._id);
+    // console.log(classFound);
 
     completeClass.findByIdAndUpdate(
       classFound._id,
@@ -96,31 +98,3 @@ const EveryClass = mongoose.model("EveryClass", everyClassSchema);
 
 module.exports = EveryClass;
 
-
-
-
-  //console.log(hotelId);
-  // const stats = await this.aggregate([
-  //   {
-  //     $match: { hotel: hotelId },
-  //   },
-  //   {
-  //     $group: {
-  //       _id: "$hotel",
-  //       nRating: { $sum: 1 },
-  //       avgRating: { $avg: "$rating" },
-  //     },
-  //   },
-  // ]);
-
-  // if (stats.length > 0) {
-  //   await Hotel.findByIdAndUpdate(hotelId, {
-  //     ratingsQuantity: stats[0].nRating,
-  //     ratingsAverage: stats[0].avgRating,
-  //   });
-  // } else {
-  //   await Hotel.findByIdAndUpdate(hotelId, {
-  //     ratingsQuantity: 0,
-  //     ratingsAverage: 0,
-  //   });
-  // }
