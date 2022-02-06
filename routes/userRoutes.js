@@ -178,10 +178,13 @@ Router.get("/createCompleteClass/:email/:courseId/:courseName/:ac_t", async (req
       if (currentClass.length < 1) {
           var class1 = {
             name: req.params.courseName,
+            fileNames: [],
             courseId: req.params.courseId,
             totalDuration: 0,
             StudentsData: [],
           };
+          
+          class1.fileNames.push(req.params.courseName.toLowerCase());
         //const res = 
         classroom.courses.students.list({
           courseId: `${req.params.courseId}`,
