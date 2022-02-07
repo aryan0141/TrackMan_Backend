@@ -60,7 +60,7 @@ everyClassSchema.statics.calcAverageRatings = async function (className , arrOfS
           }
         }
       }
-      classFound.totalClasses = classFound.totalDuration + 1;
+      classFound.totalClasses = classFound.totalClasses + 1;
       classFound.totalDuration = classFound.totalDuration + maxDur;
       //console.log(" HI" , classFound.id);
       // console.log(classFound._id);

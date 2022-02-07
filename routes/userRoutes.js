@@ -218,6 +218,54 @@ Router.get("/createCompleteClass/:email/:courseId/:courseName/:ac_t", async (req
 
 
 
+Router.get("/teachersClass/:courseId/:email/:ac_token", async (req, resp, next) => {
+  try {
+    const email9 = req.params.email;
+    var RefreshToken1 = null;
+    ac_token = req.params.ac_token;
+    const courseId = req.params.courseId;
 
+
+    const func3 = async () => {
+
+    oauth2Client.setCredentials({
+      refresh_token: RefreshToken1,
+      access_token: ac_token,
+    });
+
+    const res = await classroom.courses.teachers
+      .get({
+        courseId: courseId,
+        userId: "me",
+      })
+      .then((teacherYes) => {
+        // console.log("hello");
+        // console.log(teacherYes);
+        if (teacherYes == null) {
+          console.log("Unauthorized User");
+        } else {
+          const currentClass = CompleteClass.findOne({courseId: courseId,}).then((currentClass) =>{
+            resp.json(currentClass);
+          })
+          // resp.json(currentClass);
+        }
+      }).catch((error) => {
+        console.error(error);
+      });
+
+         
+
+  };
+
+
+
+    User.findOne({ email: email9 }).then((currentUser) => {
+    RefreshToken1 = currentUser.refreshToken;
+        func3();
+    });
+  } catch (error) {
+    next(error);
+  }
+});
 
 module.exports = Router;

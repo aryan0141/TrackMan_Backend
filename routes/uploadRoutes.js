@@ -23,6 +23,7 @@ const upload = multer({storage}).single('file');
 
 Router.post("/upload", async (req, res, next) => {
   try {
+    console.log("hi");
     //console.log(req.file);
     upload(req,res,(err)=>{
         if(err){
