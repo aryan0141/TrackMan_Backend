@@ -57,15 +57,18 @@ Router.post("/addClass" , async (req, res , next) =>{
 
     if(exten==='csv')
     {
-      const st1 = fileName.split(" Lecture")[0];
-      // const st2 = st1[0]
-      const st2 = st1.split(" ");
-      const st3 = st2[st2.length - 1];
+      // const st1 = fileName.split(" Lecture")[0];
+      // const st2 = st1.split(" ");
+      // const st3 = st2[st2.length - 1];
+      const st1 = fileName.split(" - Attendance Report.csv");
+      const st2 = st1[0];
+      const st3 = st2.substring(17, st2.length);
+      console.log(st3);
 
       //console.log(st2[st2.length -1]);
 
       var studentsData = {
-          date: st1.split(" ")[0],
+          date: st1[0],
           className: st3,
           arrOfStudents: []
 
