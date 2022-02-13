@@ -4,7 +4,8 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const userRouter = require("./routes/userRoutes");
 const uploadRouter = require("./routes/uploadRoutes");
-const teacherRouter = require("./routes/teachersClassRoutes")
+const teacherRouter = require("./routes/teachersClassRoutes");
+const filenames = require("./routes/fileName");
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use(express.urlencoded({ extended: false, limit: "10kb" }));
 app.use("/api/users", userRouter);
 app.use("/api/uploadDoc" , uploadRouter);
 app.use("/api/teachers", teacherRouter);
+app.use("/api/fileNames" , filenames );
 
 module.exports = app;
 

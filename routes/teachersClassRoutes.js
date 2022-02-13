@@ -63,7 +63,7 @@ Router.get("/teachersClass/:courseId", async (req, resp, next) => {
   
   const currentClass = await CompleteClass.findOne({ courseId: courseId });
   
-
+    
   resp.json(currentClass);
    } catch (error) {
     next(error);

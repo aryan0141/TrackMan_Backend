@@ -6,6 +6,7 @@ const fs = require("fs");
 const csv = require("csvtojson");
 var subsrt = require("subsrt");
 const { resourceLimits } = require("worker_threads");
+const completeClass = require("./../models/CompleteClass");
 const everyClass = require("./../models/EveryClass");
 const everySBV = require("./../models/EverySBV");
 
@@ -64,44 +65,45 @@ Router.post("/addClass" , async (req, res , next) =>{
       const st2 = st1[0];
       const st3 = st2.substring(17, st2.length);
       console.log(st3);
+      var className1 = "";
+      completeClass.find({ fileNames: { $elemMatch: { $eq: st3 } } }).then((classFound11) =>{
+        className1 = classFound11[0].name;
+        // console.log(classFound11);
+
+        var studentsData = {
+          date: st1[0],
+          className: className1,
+          arrOfStudents: [],
+        };
+
+
+        const csvFilePath = `./public/${fileName}`;
+        csv().fromFile(csvFilePath).then((jsonObj) => {
+          for (let x = 0; x < jsonObj.length; x++) {
+            const firstName1 = jsonObj[x]["First name"];
+            const lastName1 = jsonObj[x]["Last name"];
+            const fullName = firstName1 + " " + lastName1;
+            studentsData.arrOfStudents.push({
+              name: fullName,
+              firstName: firstName1,
+              lastName: lastName1,
+              email: jsonObj[x].Email,
+              duration: jsonObj[x].Duration,
+            });
+        }
+            //console.log(studentsData);
+            everyClass.create(studentsData);
+          });
+      });
 
       //console.log(st2[st2.length -1]);
 
-      var studentsData = {
-          date: st1[0],
-          className: st3,
-          arrOfStudents: []
 
-      }
-
-      var ranObj = {
-          // name: "a",
-          // email: "a",
-          // duration: "a",
-      }
       
 
-      const csvFilePath = `./public/${fileName}`;
-      csv()
-        .fromFile(csvFilePath)
-        .then((jsonObj) => {
-          for(let x = 0 ; x<jsonObj.length ; x++ )
-          {
-              //console.log(x);
-              // ranObj.name = jsonObj[x]["First name"];
-              // ranObj.email = jsonObj[x].Email;
-              // ranObj.duration = jsonObj[x].Duration;
-              const firstName1 = jsonObj[x]["First name"];;
-              const lastName1 = jsonObj[x]["Last name"];
-              const fullName = firstName1+" "+lastName1;
-              studentsData.arrOfStudents.push({ name: fullName , firstName: firstName1, lastName: lastName1, email :jsonObj[x].Email , duration: jsonObj[x].Duration });
-          }
-          //console.log(studentsData);
-          everyClass.create(studentsData);
 
-        });
 
-      const jsonArray = await csv().fromFile(csvFilePath);
+      //const jsonArray = await csv().fromFile(csvFilePath);
     }else if(exten === 'sbv')
     {
       const sbvFilePath = `./public/${fileName}`;

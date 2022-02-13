@@ -23,7 +23,7 @@ everyClassSchema.statics.calcAverageRatings = async function (className , arrOfS
 
   //completeClass.findOne({name: className}).then( (classFound) =>{
   completeClass.find({ fileNames: { $elemMatch: { $eq: className } } }).then((classFound1) => {
-      //console.log(classFound[0]);
+      console.log(classFound1[0]);
       const classFound = classFound1[0];
       //console.log(classFound.StudentsData);
 
