@@ -22,6 +22,7 @@ Router.post("/addFileName", async (req, res, next) => {
                 if (err) {
                     console.log("Error happened");
                     } else {
+                      res.json({msg: "success" , status: 200});
                       console.log("success");
                     }
                   }
@@ -30,7 +31,7 @@ Router.post("/addFileName", async (req, res, next) => {
             
         }else{
             console.log("Filename is already registered");
-            res.status(400);
+            res.json({msg: "Already registered" , status: 400});
 
         }
           
@@ -44,7 +45,8 @@ Router.post("/deleteFileName", async (req, res, next) => {
   completeClass.find({ fileNames: { $elemMatch: { $eq: filename.name } } }).then((classFound1) => {
       if (classFound1[0] == null) {
         console.log("classfound is null");
-        res.status(400);
+        //res.status(400);
+        res.json({ msg: "Already registered", status: 400 });
 
       } else {
 
@@ -64,9 +66,12 @@ Router.post("/deleteFileName", async (req, res, next) => {
                 },
                 function (err, docs) {
                 if (err) {
+                  res.json({ msg: "Already registered", status: 400 });
                     console.log("Error happened");
                 } else {
-                    console.log("successfully deleted");
+                  res.json({ msg: "success", status: 200 });
+                  //res.status(200);
+                  console.log("successfully deleted");
                 }
             }
             );
