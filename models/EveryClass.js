@@ -50,11 +50,14 @@ everyClassSchema.statics.calcAverageRatings = async function (className , arrOfS
             if (time3 > maxDur) {
               maxDur = time3;
             }
-            //console.log(time3);
-            classFound.StudentsData[y].duration =
-              classFound.StudentsData[y].duration + time3;
+            console.log(classFound.cutOffMins);
+            if (time3 > classFound.cutOffMins)
+            {
+              classFound.StudentsData[y].duration =
+                classFound.StudentsData[y].duration + time3;
             classFound.StudentsData[y].classesAttended =
               classFound.StudentsData[y].classesAttended + 1;
+            }
             //obj.duration = obj.duration + time3;
             //classFound.StudentsData[i] = obj;
           }

@@ -83,4 +83,35 @@ Router.post("/deleteFileName", async (req, res, next) => {
     });
 });
 
+Router.post("/updateCuttOffMin" , async(req , res , next) =>{
+    const { cuttOffMin1 } = req.body;
+
+    console.log(cuttOffMin1);
+    const cuttOffMin = Number(cuttOffMin1.cuttOffMin);
+    const className1 = cuttOffMin1.className1;
+
+
+    completeClass.findOne( {name: className1}).then((resp) =>{
+      completeClass.findByIdAndUpdate(
+        resp._id,
+        {
+          cutOffMins: cuttOffMin,
+          // totalClasses: classFound.totalClasses,
+          // totalDuration: classFound.totalDuration,
+          // StudentsData: classFound.StudentsData,
+        },
+        function (err, docs) {
+          if (err) {
+            res.json({ msg: "Already registered", status: 400 });
+            console.log("Error happened");
+          } else {
+            res.json({ msg: "success", status: 200 });
+            console.log("success");
+          }
+        }
+      );
+    })
+
+    console.log(cuttOffMin);
+})
 module.exports = Router;

@@ -19,6 +19,11 @@ const CompleteClassSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+
+  cutOffMins :{
+    type: Number,
+    default: 1
+  },
   totalClasses: {
     type: Number,
     default: 0,
