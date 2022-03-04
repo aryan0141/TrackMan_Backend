@@ -5,9 +5,18 @@ const CompleteClassSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    lowercase: true,
+    // lowercase: true,
   },
-  fileNames: [ String],
+  fileNames: [String],
+  uploadNames: [
+    {
+      fileId: String,
+      date: String,
+      filename: String,
+      uploadTime: String,
+      FileType: String,
+    },
+  ],
 
   courseId: {
     type: String,
@@ -20,9 +29,9 @@ const CompleteClassSchema = new mongoose.Schema({
     default: 0,
   },
 
-  cutOffMins :{
+  cutOffMins: {
     type: Number,
-    default: 1
+    default: 1,
   },
   totalClasses: {
     type: Number,

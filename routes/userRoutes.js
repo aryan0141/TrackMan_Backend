@@ -176,15 +176,17 @@ Router.get("/createCompleteClass/:email/:courseId/:courseName/:ac_t", async (req
     //var currentClass = await 
     CompleteClass.find({ courseId: req.params.courseId }).then((currentClass)=>{
       if (currentClass.length < 1) {
+          
           var class1 = {
             name: req.params.courseName,
             fileNames: [],
+            uploadNames: [],
             courseId: req.params.courseId,
             totalDuration: 0,
             StudentsData: [],
           };
           
-          class1.fileNames.push(req.params.courseName.toLowerCase());
+          class1.fileNames.push(req.params.courseName);
         //const res = 
         classroom.courses.students.list({
           courseId: `${req.params.courseId}`,

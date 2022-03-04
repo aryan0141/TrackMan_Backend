@@ -68,11 +68,15 @@ Router.post("/addClass" , async (req, res , next) =>{
       var className1 = "";
       completeClass.find({ fileNames: { $elemMatch: { $eq: st3 } } }).then((classFound11) =>{
         className1 = classFound11[0].name;
+        courseId1 = classFound11[0].courseId;
+        const thresholdMins1 = classFound11[0].cutOffMins;
         // console.log(classFound11);
 
         var studentsData = {
-          date: st1[0],
+          date: st1[0].split(" ")[0],
           className: className1,
+          courseId: courseId1,
+          thresholdMins: thresholdMins1,
           arrOfStudents: [],
         };
 
@@ -110,7 +114,6 @@ Router.post("/addClass" , async (req, res , next) =>{
       var content = fs.readFileSync(sbvFilePath, "utf8").toString();
       const content1 = content.split("\n");
       // console.log(content1);
-      // console.log("PA");
 
       var arr1 = [];
       for (let x = 0; x < content1.length; x++) {
@@ -156,24 +159,22 @@ Router.post("/addClass" , async (req, res , next) =>{
       const name3 = name2.replace('(20' , '@20');
       const name4 = name3.split(" @")[0];
       const date1 = name3.split("@")[1].split(" ")[0];
-      console.log(name4);
-      console.log(date1);
+      // console.log(name4);
+      // console.log(date1);
 
 
-      //console.log(st2[st2.length -1]);
+      completeClass.find({ fileNames: { $elemMatch: { $eq: name4 } } }).then((classFound1) =>{
+        var studentsData = {
+          date: date1,
+          className: classFound1[0].name,
+          courseId: classFound1[0].courseId,
+          arrOfStudents: arr1,
+        };
 
-      var studentsData = {
-        date: date1,
-        className: name4,
-        arrOfStudents: arr1,
-      };
-      
-      everySBV.create(studentsData);
-      // var ranObj = {
-      //   // name: "a",
-      //   // email: "a",
-      //   // duration: "a",
-      // };
+        everySBV.create(studentsData);
+      })
+
+
 
       console.log("Hello SBV FILE uploaded");
     }
@@ -182,5 +183,185 @@ Router.post("/addClass" , async (req, res , next) =>{
 
 })
 
+Router.get("/deleteEveryClass/:courseId/:fileId", async (req, res, next) => {
+  try {
+    console.log("API is called");
+    console.log(req.params.courseId , req.params.fileId);
+    completeClass.findOne({ courseId: req.params.courseId }).then((classFound) =>{
+      everyClass.findById(req.params.fileId).then((fileFound) =>{
+        console.log(classFound);
+        console.log(fileFound);
 
+
+        var maxDur1 = 0;
+
+        for(let x = 0 ; x<fileFound.arrOfStudents.length ; x++){
+          for(let y = 0 ; y<classFound.StudentsData.length ; y++){
+
+
+            if (x == fileFound.arrOfStudents.length - 1) {
+                    const time22 = fileFound.arrOfStudents[x].duration;
+                    var time33 = 0;
+                    if (time22.includes("hr")) {
+                      const time44 = Number(time22.split("hr")[0]);
+                      time33 = time33 + time44 * 60;
+                      const time55 = time22.split("hr")[1];
+                      const time66 = Number(time55.split("min")[0]);
+                      time33 = time33 + time66;
+                    } else if (time22.includes("min")) {
+                      const time77 = Number(time22.split("min")[0]);
+                      time33 = time33 + time77;
+                    } else {
+                      time33 = 0;
+                    }
+
+          maxDur1 = time33;
+          }
+
+            if(fileFound.arrOfStudents[x].email===classFound.StudentsData[y].email){
+              const time2 = fileFound.arrOfStudents[x].duration;
+              var time3 = 0;
+              if (time2.includes("hr")) {
+                const time4 = Number(time2.split("hr")[0]);
+                time3 = time3 + time4 * 60;
+                const time5 = time2.split("hr")[1];
+                const time6 = Number(time5.split("min")[0]);
+                time3 = time3 + time6;
+              } else if (time2.includes("min")) {
+                const time7 = Number(time2.split("min")[0]);
+                time3 = time3 + time7;
+              } else {
+                time3 = 0;
+              }
+
+            classFound.StudentsData[y].duration = classFound.StudentsData[y].duration -time3;
+            if (time3 >= classFound.cutOffMins)
+            {
+              classFound.StudentsData[y].classesAttended =classFound.StudentsData[y].classesAttended - 1; 
+            }
+            }
+          }
+        }
+        classFound.totalClasses = classFound.totalClasses - 1;
+        classFound.totalDuration = classFound.totalDuration - maxDur1;
+        classFound.uploadNames = classFound.uploadNames.filter((item) => item.fileId !== req.params.fileId);
+        // classFound
+        completeClass.findByIdAndUpdate(
+          classFound._id,
+          {
+            totalClasses: classFound.totalClasses,
+            totalDuration: classFound.totalDuration,
+            StudentsData: classFound.StudentsData,
+            uploadNames: classFound.uploadNames,
+          },
+          function (err, docs) {
+            if (err) {
+              console.log("Error happened");
+            } else {
+              console.log("success");
+              res.json({ msg: "success", status: 200 });
+            }
+          }
+        );
+      })
+    })
+
+  } catch (error) {
+    next(error);
+  }
+});
+
+Router.get("/deleteEveryClassSbv/:courseId/:fileId", async (req, res, next) => {
+  try {
+    console.log("API is called");
+    console.log(req.params.courseId, req.params.fileId);
+    completeClass
+      .findOne({ courseId: req.params.courseId })
+      .then((classFound) => {
+        everySBV.findById(req.params.fileId).then((fileFound) => {
+          console.log(classFound);
+          console.log(fileFound);
+
+          //var maxDur1 = 0;
+
+          for (let x = 0; x < fileFound.arrOfStudents.length; x++) {
+            for (let y = 0; y < classFound.StudentsData.length; y++) {
+              // if (x == fileFound.arrOfStudents.length - 1) {
+              //   const time22 = fileFound.arrOfStudents[x].duration;
+              //   var time33 = 0;
+              //   if (time22.includes("hr")) {
+              //     const time44 = Number(time22.split("hr")[0]);
+              //     time33 = time33 + time44 * 60;
+              //     const time55 = time22.split("hr")[1];
+              //     const time66 = Number(time55.split("min")[0]);
+              //     time33 = time33 + time66;
+              //   } else if (time22.includes("min")) {
+              //     const time77 = Number(time22.split("min")[0]);
+              //     time33 = time33 + time77;
+              //   } else {
+              //     time33 = 0;
+              //   }
+
+              //   maxDur1 = time33;
+              // }
+
+              if (
+                fileFound.arrOfStudents[x].name ===
+                classFound.StudentsData[y].name
+              ) {
+                // const time2 = fileFound.arrOfStudents[x].duration;
+                // var time3 = 0;
+                // if (time2.includes("hr")) {
+                //   const time4 = Number(time2.split("hr")[0]);
+                //   time3 = time3 + time4 * 60;
+                //   const time5 = time2.split("hr")[1];
+                //   const time6 = Number(time5.split("min")[0]);
+                //   time3 = time3 + time6;
+                // } else if (time2.includes("min")) {
+                //   const time7 = Number(time2.split("min")[0]);
+                //   time3 = time3 + time7;
+                // } else {
+                //   time3 = 0;
+                // }
+
+                classFound.StudentsData[y].comments =
+                  classFound.StudentsData[y].comments -
+                  fileFound.arrOfStudents[x].comments;
+                // if (time3 >= classFound.cutOffMins) {
+                //   classFound.StudentsData[y].classesAttended =
+                //     classFound.StudentsData[y].classesAttended - 1;
+                // }
+              }
+            }
+          }
+          // classFound.totalClasses = classFound.totalClasses - 1;
+          // classFound.totalDuration = classFound.totalDuration - maxDur1;
+          classFound.uploadNames = classFound.uploadNames.filter(
+            (item) => item.fileId !== req.params.fileId
+          );
+          // classFound
+          completeClass.findByIdAndUpdate(
+            classFound._id,
+            {
+              //totalClasses: classFound.totalClasses,
+              //totalDuration: classFound.totalDuration,
+              StudentsData: classFound.StudentsData,
+              uploadNames: classFound.uploadNames,
+            },
+            function (err, docs) {
+              if (err) {
+                console.log("Error happened");
+              } else {
+                console.log("success");
+                everySBV.findByIdAndDelete(req.params.fileId);
+                res.json({ msg: "success", status: 200 });
+              }
+            }
+          );
+        });
+      });
+  } catch (error) {
+    next(error);
+  }
+});
 module.exports = Router;
