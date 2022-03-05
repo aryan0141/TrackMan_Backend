@@ -12,7 +12,7 @@ const everyClassSchema = new mongoose.Schema({
     type: String,
     required: true,
     // unique: true,
-    lowercase: true,
+    // lowercase: true,
   },
   courseId:{
     type: String,
@@ -29,7 +29,7 @@ function addZero(num) {
 }
 
 everyClassSchema.statics.calcAverageRatings = async function (className , arrOfStudents , fileID1) {
-
+  console.log(className);
   //completeClass.findOne({name: className}).then( (classFound) =>{
   completeClass.find({ fileNames: { $elemMatch: { $eq: className } } }).then((classFound1) => {
       console.log(classFound1[0]);
