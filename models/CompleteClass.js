@@ -33,6 +33,10 @@ const CompleteClassSchema = new mongoose.Schema({
     type: Number,
     default: 1,
   },
+  weightAge: {
+    type: [],
+    default: [34 , 33, 33],
+  },
   totalClasses: {
     type: Number,
     default: 0,

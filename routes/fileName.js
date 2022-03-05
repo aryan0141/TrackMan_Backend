@@ -113,5 +113,39 @@ Router.post("/updateCuttOffMin" , async(req , res , next) =>{
     })
 
     console.log(cuttOffMin);
-})
+});
+
+
+Router.post("/updateWeightageArr", async (req, res, next) => {
+  console.log("API called");
+  const { weightAgeDoc } = req.body;
+  const w1 = weightAgeDoc.w1;
+  const w2 = weightAgeDoc.w2;
+  const w3 = weightAgeDoc.w3;
+  const className2 = weightAgeDoc.className2; 
+  const arr23 = [w1 , w2 , w3];
+
+  completeClass.findOne({ name: className2 }).then((classFound2) =>{
+    completeClass.findByIdAndUpdate(
+      classFound2._id,
+      {
+        weightAge: arr23,
+      },
+      function (err, docs) {
+        if (err) {
+          res.json({ msg: "Error happened", status: 400 });
+          console.log("Error happened");
+        } else {
+          res.json({ msg: "success", status: 200 });
+          console.log("success on weightAge");
+        }
+      }
+    );
+
+  })
+
+});
+
+
+
 module.exports = Router;
