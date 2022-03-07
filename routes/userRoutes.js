@@ -204,6 +204,7 @@ Router.get("/createCompleteClass/:email/:courseId/:courseName/:ac_t", async (req
             );
           }
           CompleteClass.create(class1);
+          resp.json({ msg: "success", status: 200 });
         })
 
     }
@@ -252,6 +253,7 @@ Router.get("/teachersClass/:courseId/:email/:ac_token", async (req, resp, next) 
           // resp.json(currentClass);
         }
       }).catch((error) => {
+        res.json({ msg: "success", status: 200 });
         console.error(error);
       });
 

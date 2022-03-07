@@ -78,6 +78,7 @@ Router.post("/addClass", async (req, res, next) => {
           date: st1[0].split(" ")[0],
           className: className1,
           courseId: courseId1,
+          maxDur : 100,
           thresholdMins: thresholdMins1,
           arrOfStudents: [],
         };
@@ -86,6 +87,26 @@ Router.post("/addClass", async (req, res, next) => {
         csv()
           .fromFile(csvFilePath)
           .then((jsonObj) => {
+            // const maxDur = jsonObj[jsonObj.length -1].Duration;
+            // console.log("MAX DUR");
+            // console.log(maxDur);
+            const time22 = jsonObj[jsonObj.length - 1].Duration;
+            var time33 = 0;
+            if (time22.includes("hr")) {
+              const time44 = Number(time22.split("hr")[0]);
+              time33 = time33 + time44 * 60;
+              const time55 = time22.split("hr")[1];
+              const time66 = Number(time55.split("min")[0]);
+              time33 = time33 + time66;
+            } else if (time22.includes("min")) {
+              const time77 = Number(time22.split("min")[0]);
+              time33 = time33 + time77;
+            } else {
+              time33 = 0;
+            }
+            const maxDur = time33;
+            studentsData.maxDur = maxDur;
+
             for (let x = 0; x < jsonObj.length; x++) {
               const firstName1 = jsonObj[x]["First name"];
               const lastName1 = jsonObj[x]["Last name"];
@@ -223,6 +244,9 @@ Router.get("/deleteEveryClass/:courseId/:fileId", async (req, res, next) => {
                   time3 = time3 + time7;
                 } else {
                   time3 = 0;
+                }
+                if (time3 > fileFound.maxDur) {
+                  time3 = fileFound.maxDur;
                 }
 
                 classFound.StudentsData[y].duration =

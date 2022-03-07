@@ -17,6 +17,9 @@ const everyClassSchema = new mongoose.Schema({
   courseId:{
     type: String,
   },
+  maxDur: {
+      type: Number,
+  },
   thresholdMins :{
     type: Number,
   },
@@ -38,27 +41,44 @@ everyClassSchema.statics.calcAverageRatings = async function (className , arrOfS
 
       var maxDur = 0;
       var maxDur1 = 0;
+      const x1 = arrOfStudents.length - 1;
+        const time22 = arrOfStudents[x1].duration;
+        var time33 = 0;
+        if (time22.includes("hr")) {
+          const time44 = Number(time22.split("hr")[0]);
+          time33 = time33 + time44 * 60;
+          const time55 = time22.split("hr")[1];
+          const time66 = Number(time55.split("min")[0]);
+          time33 = time33 + time66;
+        } else if (time22.includes("min")) {
+          const time77 = Number(time22.split("min")[0]);
+          time33 = time33 + time77;
+        } else {
+          time33 = 0;
+        }
+
+        maxDur1 = time33;
 
       for (let x = 0; x < arrOfStudents.length; x++) {
         let count = 0;
-        if (x == arrOfStudents.length - 1) {
-                    const time22 = arrOfStudents[x].duration;
-                    var time33 = 0;
-                    if (time22.includes("hr")) {
-                      const time44 = Number(time22.split("hr")[0]);
-                      time33 = time33 + time44 * 60;
-                      const time55 = time22.split("hr")[1];
-                      const time66 = Number(time55.split("min")[0]);
-                      time33 = time33 + time66;
-                    } else if (time22.includes("min")) {
-                      const time77 = Number(time22.split("min")[0]);
-                      time33 = time33 + time77;
-                    } else {
-                      time33 = 0;
-                    }
+        // if (x == arrOfStudents.length - 1) {
+        //             const time22 = arrOfStudents[x].duration;
+        //             var time33 = 0;
+        //             if (time22.includes("hr")) {
+        //               const time44 = Number(time22.split("hr")[0]);
+        //               time33 = time33 + time44 * 60;
+        //               const time55 = time22.split("hr")[1];
+        //               const time66 = Number(time55.split("min")[0]);
+        //               time33 = time33 + time66;
+        //             } else if (time22.includes("min")) {
+        //               const time77 = Number(time22.split("min")[0]);
+        //               time33 = time33 + time77;
+        //             } else {
+        //               time33 = 0;
+        //             }
 
-          maxDur1 = time33;
-        }
+        //   maxDur1 = time33;
+        // }
 
         for (let y = 0; y < classFound.StudentsData.length; y++) {
           if (classFound.StudentsData[y].email == arrOfStudents[x].email) {
@@ -81,14 +101,16 @@ everyClassSchema.statics.calcAverageRatings = async function (className , arrOfS
             if (time3 > maxDur) {
               maxDur = time3;
             }
-
+            if(time3 > maxDur1){
+              time3 = maxDur1;
+            }
             console.log(classFound.cutOffMins);
             classFound.StudentsData[y].duration = classFound.StudentsData[y].duration + time3;
             if (time3 >= classFound.cutOffMins)
             {              
               classFound.StudentsData[y].classesAttended = classFound.StudentsData[y].classesAttended + 1;
             }else{
-              classFound.StudentsData[y].duration = classFound.StudentsData[y].duration + time3;
+              classFound.StudentsData[y].duration =  classFound.StudentsData[y].duration + time3;
             }
             //obj.duration = obj.duration + time3;
             //classFound.StudentsData[i] = obj;
@@ -109,7 +131,9 @@ everyClassSchema.statics.calcAverageRatings = async function (className , arrOfS
           } else {
             time3 = 0;
           }
-
+          if(time3 > maxDur1){
+            time3 = maxDur1;
+          }
           let obj = {
             email: arrOfStudents[x].email,
             duration: time3,
