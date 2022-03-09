@@ -1,11 +1,9 @@
-
 const express = require("express");
 const Router = express.Router();
 const { google } = require("googleapis");
 const User = require("./../models/userModel");
 const CompleteClass = require("./../models/CompleteClass");
 const axios = require("axios");
-
 
 const GOOGLE_CLIENT_ID =
   "821931130263-d6pvkrhi1tjmcrmk2tdcbhp9mpgq3sqn.apps.googleusercontent.com";
@@ -17,9 +15,7 @@ const oauth2Client = new google.auth.OAuth2(
   "http://localhost:3000"
 );
 
-
 const classroom = google.classroom({ version: "v1", auth: oauth2Client });
-
 
 var ac_t = null;
 
@@ -58,25 +54,28 @@ Router.post("/create-tokens", async (req, res, next) => {
         picture: resp.data.picture,
         refreshToken: code1.refreshToken,
       };
-      User.findOne({ email: user2.email}, function(err , existingUser){
-        if(existingUser == null){
-          console.log("New User")
+      User.findOne({ email: user2.email }, function (err, existingUser) {
+        if (existingUser == null) {
+          console.log("New User");
           User.create(user2);
-        }else{
+        } else {
           // console.log("Already exist");
           // console.log(existingUser._id);
-          User.findByIdAndUpdate( existingUser._id , {
-            refreshToken: user2.refreshToken
-          },function (err, docs) {
-        if (err) {
-          console.log("Error happened");
-        } else {
-          console.log("success");
-        }}
-          
+          User.findByIdAndUpdate(
+            existingUser._id,
+            {
+              refreshToken: user2.refreshToken,
+            },
+            function (err, docs) {
+              if (err) {
+                console.log("Error happened");
+              } else {
+                console.log("success");
+              }
+            }
           );
         }
-      })
+      });
       //User.create(user2);
 
       user3.name = resp.data.name;
@@ -121,9 +120,9 @@ Router.post("/create-tokens", async (req, res, next) => {
 
 Router.get("/courseList/:email", async (req, resp, next) => {
   // try {
-  
+
   const email9 = req.params.email;
- 
+
   var currentUser = await User.findOne({ email: email9 });
   var RefreshToken = currentUser.refreshToken;
   //console.log(RefreshToken);
@@ -146,7 +145,6 @@ Router.get("/courseList/:email", async (req, resp, next) => {
   // const authClient = await auth.getClient(req.params.accessToken);
   // google.options({ auth: authClient });
 
-
   // console.log(res.data);
   // const resp = await axios.get
   resp.json(res.data);
@@ -156,120 +154,116 @@ Router.get("/courseList/:email", async (req, resp, next) => {
   // }
 });
 
-Router.get("/createCompleteClass/:email/:courseId/:courseName/:ac_t", async (req, resp, next) => {
-
-  const email9 = req.params.email;
-
-
-  var RefreshToken = null;
-  ac_t = req.params.ac_t;
-  //console.log(req.params.courseId);
-
-  const func2 = async () =>{
-    //console.log(RefreshToken , ac_t);
-
-    oauth2Client.setCredentials({
-      refresh_token: RefreshToken,
-      access_token: ac_t,
-    });
-
-    //var currentClass = await 
-    CompleteClass.find({ courseId: req.params.courseId }).then((currentClass)=>{
-      if (currentClass.length < 1) {
-          
-          var class1 = {
-            name: req.params.courseName,
-            fileNames: [],
-            uploadNames: [],
-            courseId: req.params.courseId,
-            totalDuration: 0,
-            StudentsData: [],
-          };
-          
-          class1.fileNames.push(req.params.courseName);
-        //const res = 
-        classroom.courses.students.list({
-          courseId: `${req.params.courseId}`,
-        }).then((res)=>{
-          //console.log(res.data.students[0].profile);
-          const students = res.data.students;
-          for(let x = 0 ; x<students.length ; x++)
-          {
-            class1.StudentsData.push(
-              {
-                name: students[x].profile.name.fullName,
-                duration: 0,
-                email: students[x].profile.emailAddress,
-              }
-            );
-          }
-          CompleteClass.create(class1);
-          resp.json({ msg: "success", status: 200 });
-        })
-
-    }
-   })
-  }
-
-  //var currentUser = await 
-  User.findOne({ email: email9 }).then((currentUser)=>{
-    RefreshToken = currentUser.refreshToken;
-    func2();
-  });
-
-});
-
-
-
-Router.get("/teachersClass/:courseId/:email/:ac_token", async (req, resp, next) => {
-  try {
+Router.get(
+  "/createCompleteClass/:email/:courseId/:courseName/:ac_t",
+  async (req, resp, next) => {
     const email9 = req.params.email;
-    var RefreshToken1 = null;
-    ac_token = req.params.ac_token;
-    const courseId = req.params.courseId;
 
+    var RefreshToken = null;
+    ac_t = req.params.ac_t;
+    //console.log(req.params.courseId);
 
-    const func3 = async () => {
+    const func2 = async () => {
+      //console.log(RefreshToken , ac_t);
 
-    oauth2Client.setCredentials({
-      refresh_token: RefreshToken1,
-      access_token: ac_token,
-    });
-
-    const res = await classroom.courses.teachers
-      .get({
-        courseId: courseId,
-        userId: "me",
-      })
-      .then((teacherYes) => {
-        // console.log("hello");
-        // console.log(teacherYes);
-        if (teacherYes == null) {
-          console.log("Unauthorized User");
-        } else {
-          const currentClass = CompleteClass.findOne({courseId: courseId,}).then((currentClass) =>{
-            resp.json(currentClass);
-          })
-          // resp.json(currentClass);
-        }
-      }).catch((error) => {
-        res.json({ msg: "success", status: 200 });
-        console.error(error);
+      oauth2Client.setCredentials({
+        refresh_token: RefreshToken,
+        access_token: ac_t,
       });
 
-         
+      //var currentClass = await
+      CompleteClass.find({ courseId: req.params.courseId }).then(
+        (currentClass) => {
+          if (currentClass.length < 1) {
+            var class1 = {
+              name: req.params.courseName,
+              fileNames: [],
+              uploadNames: [],
+              courseId: req.params.courseId,
+              totalDuration: 0,
+              StudentsData: [],
+            };
 
-  };
+            class1.fileNames.push(req.params.courseName);
+            //const res =
+            classroom.courses.students
+              .list({
+                courseId: `${req.params.courseId}`,
+              })
+              .then((res) => {
+                //console.log(res.data.students[0].profile);
+                const students = res.data.students;
+                for (let x = 0; x < students.length; x++) {
+                  class1.StudentsData.push({
+                    name: students[x].profile.name.fullName,
+                    duration: 0,
+                    email: students[x].profile.emailAddress,
+                  });
+                }
+                CompleteClass.create(class1);
+                resp.json({ msg: "success", status: 200 });
+              });
+          }
+        }
+      );
+    };
 
-
-
+    //var currentUser = await
     User.findOne({ email: email9 }).then((currentUser) => {
-    RefreshToken1 = currentUser.refreshToken;
-        func3();
+      RefreshToken = currentUser.refreshToken;
+      func2();
     });
-  } catch (error) {
-    next(error);
   }
-});
+);
+
+Router.get(
+  "/teachersClass/:courseId/:email/:ac_token",
+  async (req, resp, next) => {
+    try {
+      const email9 = req.params.email;
+      var RefreshToken1 = null;
+      ac_token = req.params.ac_token;
+      const courseId = req.params.courseId;
+
+      const func3 = async () => {
+        oauth2Client.setCredentials({
+          refresh_token: RefreshToken1,
+          access_token: ac_token,
+        });
+
+        const res = await classroom.courses.teachers
+          .get({
+            courseId: courseId,
+            userId: "me",
+          })
+          .then((teacherYes) => {
+            // console.log("hello");
+            // console.log(teacherYes);
+            if (teacherYes == null) {
+              console.log("Unauthorized User");
+            } else {
+              const currentClass = CompleteClass.findOne({
+                courseId: courseId,
+              }).then((currentClass) => {
+                resp.json(currentClass);
+              });
+              // resp.json(currentClass);
+            }
+          })
+          .catch((error) => {
+            res.json({ msg: "success", status: 200 });
+            console.error(error);
+          });
+      };
+
+      User.findOne({ email: email9 }).then((currentUser) => {
+        RefreshToken1 = currentUser.refreshToken;
+        func3();
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 module.exports = Router;

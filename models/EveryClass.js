@@ -14,50 +14,59 @@ const everyClassSchema = new mongoose.Schema({
     // unique: true,
     // lowercase: true,
   },
-  courseId:{
+  courseId: {
     type: String,
   },
   maxDur: {
-      type: Number,
-  },
-  thresholdMins :{
     type: Number,
   },
-  arrOfStudents: [{name: String , firstName: String , lastName: String, email: String , duration: String}]
-
+  thresholdMins: {
+    type: Number,
+  },
+  arrOfStudents: [
+    {
+      name: String,
+      firstName: String,
+      lastName: String,
+      email: String,
+      duration: String,
+    },
+  ],
 });
 
 function addZero(num) {
   return num < 10 ? `0${num}` : num;
 }
 
-everyClassSchema.statics.calcAverageRatings = async function (className , arrOfStudents , fileID1) {
-  // console.log(className);
+everyClassSchema.statics.calcAverageRatings = async function (className,arrOfStudents,fileID1, date_1) {
+  console.log(className);
   //completeClass.findOne({name: className}).then( (classFound) =>{
-  completeClass.find({ fileNames: { $elemMatch: { $eq: className } } }).then((classFound1) => {
-      // console.log(classFound1[0]);
+  completeClass
+    .find({ fileNames: { $elemMatch: { $eq: className } } })
+    .then((classFound1) => {
+      console.log(classFound1[0]);
       const classFound = classFound1[0];
       //console.log(classFound.StudentsData);
 
       var maxDur = 0;
       var maxDur1 = 0;
       const x1 = arrOfStudents.length - 1;
-        const time22 = arrOfStudents[x1].duration;
-        var time33 = 0;
-        if (time22.includes("hr")) {
-          const time44 = Number(time22.split("hr")[0]);
-          time33 = time33 + time44 * 60;
-          const time55 = time22.split("hr")[1];
-          const time66 = Number(time55.split("min")[0]);
-          time33 = time33 + time66;
-        } else if (time22.includes("min")) {
-          const time77 = Number(time22.split("min")[0]);
-          time33 = time33 + time77;
-        } else {
-          time33 = 0;
-        }
+      const time22 = arrOfStudents[x1].duration;
+      var time33 = 0;
+      if (time22.includes("hr")) {
+        const time44 = Number(time22.split("hr")[0]);
+        time33 = time33 + time44 * 60;
+        const time55 = time22.split("hr")[1];
+        const time66 = Number(time55.split("min")[0]);
+        time33 = time33 + time66;
+      } else if (time22.includes("min")) {
+        const time77 = Number(time22.split("min")[0]);
+        time33 = time33 + time77;
+      } else {
+        time33 = 0;
+      }
 
-        maxDur1 = time33;
+      maxDur1 = time33;
 
       for (let x = 0; x < arrOfStudents.length; x++) {
         let count = 0;
@@ -101,22 +110,24 @@ everyClassSchema.statics.calcAverageRatings = async function (className , arrOfS
             if (time3 > maxDur) {
               maxDur = time3;
             }
-            if(time3 > maxDur1){
+            if (time3 > maxDur1) {
               time3 = maxDur1;
             }
-            // console.log(classFound.cutOffMins);
-            classFound.StudentsData[y].duration = classFound.StudentsData[y].duration + time3;
-            if (time3 >= classFound.cutOffMins)
-            {              
-              classFound.StudentsData[y].classesAttended = classFound.StudentsData[y].classesAttended + 1;
-            }else{
-              classFound.StudentsData[y].duration =  classFound.StudentsData[y].duration + time3;
+            console.log(classFound.cutOffMins);
+            classFound.StudentsData[y].duration =
+              classFound.StudentsData[y].duration + time3;
+            if (time3 >= classFound.cutOffMins) {
+              classFound.StudentsData[y].classesAttended =
+                classFound.StudentsData[y].classesAttended + 1;
+            } else {
+              classFound.StudentsData[y].duration =
+                classFound.StudentsData[y].duration + time3;
             }
             //obj.duration = obj.duration + time3;
             //classFound.StudentsData[i] = obj;
           }
         }
-        if(count===0){
+        if (count === 0) {
           const time2 = arrOfStudents[x].duration;
           var time3 = 0;
           if (time2.includes("hr")) {
@@ -131,7 +142,7 @@ everyClassSchema.statics.calcAverageRatings = async function (className , arrOfS
           } else {
             time3 = 0;
           }
-          if(time3 > maxDur1){
+          if (time3 > maxDur1) {
             time3 = maxDur1;
           }
           let obj = {
@@ -145,7 +156,7 @@ everyClassSchema.statics.calcAverageRatings = async function (className , arrOfS
           classFound.StudentsData = [...classFound.StudentsData, obj];
         }
       }
-      // console.log(maxDur1);
+      console.log(maxDur1);
       classFound.totalClasses = classFound.totalClasses + 1;
       //classFound.totalDuration = classFound.totalDuration + maxDur;
       classFound.totalDuration = classFound.totalDuration + maxDur1;
@@ -164,18 +175,18 @@ everyClassSchema.statics.calcAverageRatings = async function (className , arrOfS
       let current_time = `${hours}:${minutes}:${seconds}`;
       //output.innerText = current_time;
 
-      const upload_time1 = current_date + " "+ current_time;
+      const upload_time1 = current_date + " " + current_time;
 
       //console.log(upload_time1);
       const obj11 = {
         fileId: fileID1,
-        date: "coming_soon...",
+        date: date_1,
         filename: "coming_soon...",
         uploadTime: upload_time1,
         FileType: "csv",
-      }
+      };
       //console.log(obj11);
-      classFound.uploadNames = [...classFound.uploadNames ,obj11];
+      classFound.uploadNames = [...classFound.uploadNames, obj11];
       //console.log(" HI" , classFound.id);
       // console.log(classFound._id);
       // console.log(classFound);
@@ -197,16 +208,19 @@ everyClassSchema.statics.calcAverageRatings = async function (className , arrOfS
         }
       );
     });
-
 };
 
 everyClassSchema.post("save", function () {
   //This points to current class that happened
-  this.constructor.calcAverageRatings(this.className , this.arrOfStudents , this._id);
+  this.constructor.calcAverageRatings(
+    this.className,
+    this.arrOfStudents,
+    this._id,
+    this.date
+  );
   //	next();
 });
 
 const EveryClass = mongoose.model("EveryClass", everyClassSchema);
 
 module.exports = EveryClass;
-

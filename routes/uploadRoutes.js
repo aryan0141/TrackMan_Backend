@@ -29,14 +29,14 @@ Router.post("/upload", async (req, res, next) => {
       if (err) {
         return res.status(500).json(err);
       }
-      // console.log(req.file);
+      console.log(req.file);
       if (
         req.file.mimetype === "application/octet-stream" ||
         req.file.mimetype === "text/csv" ||
         req.file.mimetype === "application/vnd.ms-excel"
       ) {
-        // console.log(req.file);
-        // return res.status(200).send(req.file);
+        console.log(req.file);
+        return res.status(200).send(req.file);
       } else {
         console.log("ERROR HERE");
         return res.status(400).json({ msg: "Unsuitable file type" });
@@ -63,7 +63,7 @@ Router.post("/addClass", async (req, res, next) => {
     const st1 = fileName.split(" - Attendance Report.csv");
     const st2 = st1[0];
     const st3 = st2.substring(17, st2.length);
-    // console.log(st3);
+    console.log(st3);
     var className1 = "";
     completeClass
       .find({ fileNames: { $elemMatch: { $eq: st3 } } })
@@ -73,9 +73,6 @@ Router.post("/addClass", async (req, res, next) => {
         courseId1 = classFound11[0].courseId;
         const thresholdMins1 = classFound11[0].cutOffMins;
         // console.log(classFound11);
-        // if(!classFound11.fileNames.includes(st3)){
-        //   res.json({ msg: "FileName does not matches with the class Name", status: 400 });
-        // }
 
         var studentsData = {
           date: st1[0].split(" ")[0],
@@ -124,11 +121,9 @@ Router.post("/addClass", async (req, res, next) => {
             }
             //console.log(studentsData);
             everyClass.create(studentsData);
-            
           });
       });
-      return res.status(200).json({ msg: "CSV file uploaded" });
-    //return res.status(400).json({ msg: "CSV file not uploaded" });
+
     //console.log(st2[st2.length -1]);
 
     //const jsonArray = await csv().fromFile(csvFilePath);
@@ -195,7 +190,6 @@ Router.post("/addClass", async (req, res, next) => {
       });
 
     console.log("Hello SBV FILE uploaded");
-    return res.json({ msg: "CSV file uploaded" });
   }
 });
 
