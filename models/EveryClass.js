@@ -32,10 +32,10 @@ function addZero(num) {
 }
 
 everyClassSchema.statics.calcAverageRatings = async function (className , arrOfStudents , fileID1) {
-  console.log(className);
+  // console.log(className);
   //completeClass.findOne({name: className}).then( (classFound) =>{
   completeClass.find({ fileNames: { $elemMatch: { $eq: className } } }).then((classFound1) => {
-      console.log(classFound1[0]);
+      // console.log(classFound1[0]);
       const classFound = classFound1[0];
       //console.log(classFound.StudentsData);
 
@@ -104,7 +104,7 @@ everyClassSchema.statics.calcAverageRatings = async function (className , arrOfS
             if(time3 > maxDur1){
               time3 = maxDur1;
             }
-            console.log(classFound.cutOffMins);
+            // console.log(classFound.cutOffMins);
             classFound.StudentsData[y].duration = classFound.StudentsData[y].duration + time3;
             if (time3 >= classFound.cutOffMins)
             {              
@@ -145,7 +145,7 @@ everyClassSchema.statics.calcAverageRatings = async function (className , arrOfS
           classFound.StudentsData = [...classFound.StudentsData, obj];
         }
       }
-      console.log(maxDur1);
+      // console.log(maxDur1);
       classFound.totalClasses = classFound.totalClasses + 1;
       //classFound.totalDuration = classFound.totalDuration + maxDur;
       classFound.totalDuration = classFound.totalDuration + maxDur1;
