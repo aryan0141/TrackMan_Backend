@@ -9,6 +9,7 @@ const { resourceLimits } = require("worker_threads");
 const completeClass = require("./../models/CompleteClass");
 const everyClass = require("./../models/EveryClass");
 const everySBV = require("./../models/EverySBV");
+const StopWords = require("./../models/StopWords.js");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -51,7 +52,10 @@ Router.post("/upload", async (req, res, next) => {
 Router.post("/addClass", async (req, res, next) => {
   var results = [];
   let results1 = [];
-  const { fileName } = req.body;
+  // const { fileName } = req.body;
+  const {fileName22} = req.body;
+  const fileName = fileName22.fileName;
+  const courseId22 = fileName22.courseId22;
   //console.log(fileName);
   const ext = fileName.split(".");
   const exten = ext[ext.length - 1];
@@ -65,14 +69,19 @@ Router.post("/addClass", async (req, res, next) => {
     const st3 = st2.substring(17, st2.length);
     console.log(st3);
     var className1 = "";
-    completeClass
-      .find({ fileNames: { $elemMatch: { $eq: st3 } } })
-      .then((classFound11) => {
+    completeClass.find({ fileNames: { $elemMatch: { $eq: st3 } } }).then((classFound11) => {
         console.log(classFound11);
         className1 = classFound11[0].name;
         courseId1 = classFound11[0].courseId;
         const thresholdMins1 = classFound11[0].cutOffMins;
         // console.log(classFound11);
+        // console.log(courseId1);
+        // console.log(courseId22);
+        if(courseId1 !=courseId22){
+          console.log("Error in filename");
+          //return res.status(400).json({ msg: "Error in FileName" });
+          return res.status(200).json({status:400, msg: "Error in FileName" });
+        }
 
         var studentsData = {
           date: st1[0].split(" ")[0],
@@ -81,6 +90,7 @@ Router.post("/addClass", async (req, res, next) => {
           maxDur: 100,
           thresholdMins: thresholdMins1,
           arrOfStudents: [],
+          fileName: fileName,
         };
 
         const csvFilePath = `./public/${fileName}`;
@@ -121,7 +131,11 @@ Router.post("/addClass", async (req, res, next) => {
             }
             //console.log(studentsData);
             everyClass.create(studentsData);
+            return res.status(200).json({ status:200,msg: "Successfully Done" });
           });
+      }).catch((error)=>{
+          console.log("Error in filename");
+          return res.status(200).json({status:400, msg: "Error in FileName" });
       });
 
     //console.log(st2[st2.length -1]);
@@ -134,6 +148,16 @@ Router.post("/addClass", async (req, res, next) => {
     // console.log(content1);
 
     var arr1 = [];
+    var arr2 = [];
+    const words = await StopWords.find({});
+    console.log("hello from sbv");
+    // console.log(words);
+
+    for(let x1 = 0 ; x1<words.length ; x1++){
+      arr2.push(words[x1].wordsStop);
+    }
+    // console.log(arr2);
+    
     for (let x = 0; x < content1.length; x++) {
       var ch = content1[x][0];
       if (ch) {
@@ -143,23 +167,49 @@ Router.post("/addClass", async (req, res, next) => {
           //arr1.push(content1[x]);
 
           if (content1[x].includes(":")) {
+            // console.log("Here");
             const name1 = content1[x].split(":")[0];
-            const mssg = content1[x].split(":")[1];
-            let count = 0;
-            for (let y = 0; y < arr1.length; y++) {
-              if (arr1[y].name === name1) {
-                count++;
-                arr1[y].comments = arr1[y].comments + 1;
+            const mssg = content1[x].split(":")[1].trim().toLocaleLowerCase();
+            //console.log(mssg); 
+
+
+            let count1 = 0;
+            for(let x2 = 0 ;x2<arr2.length ; x2++){
+              if(mssg.includes(arr2[x2])){
+                count1++;
               }
             }
-            if (count == 0) {
-              arr1.push({ name: name1, comments: 1 });
+            if (count1 == 0) {
+              let count = 0;
+              for (let y = 0; y < arr1.length; y++) {
+                if (arr1[y].name === name1) {
+                  count++;
+                  arr1[y].comments = arr1[y].comments + 1;
+                }
+              }
+              if (count == 0) {
+                arr1.push({ name: name1, comments: 1 });
+              }
             }
+          //   if(mssg.includes("afternoon") || mssg.includes("morning") || mssg.includes("hi") || mssg.includes("hello") || mssg.includes("ok") ){
+          //     console.log("Removed" , mssg);
+          //   }else{
+          //     let count = 0;
+          //     for (let y = 0; y < arr1.length; y++) {
+          //       if (arr1[y].name === name1) {
+          //         count++;
+          //         arr1[y].comments = arr1[y].comments + 1;
+          //       }
+          //     }
+          //     if (count == 0) {
+          //       arr1.push({ name: name1, comments: 1 });
+          //     }
+          // }
           }
         }
       }
     }
-    console.log(arr1);
+    // console.log(arr1);
 
     //var options = { verbose: true };
     //var captions = subsrt.parse(content, options);
@@ -173,8 +223,7 @@ Router.post("/addClass", async (req, res, next) => {
     const name3 = name2.replace("(20", "@20");
     const name4 = name3.split(" @")[0];
     const date1 = name3.split("@")[1].split(" ")[0];
-    // console.log(name4);
-    // console.log(date1);
+
 
     completeClass
       .find({ fileNames: { $elemMatch: { $eq: name4 } } })
@@ -184,10 +233,23 @@ Router.post("/addClass", async (req, res, next) => {
           className: classFound1[0].name,
           courseId: classFound1[0].courseId,
           arrOfStudents: arr1,
+          fileName: fileName,
         };
+        const courseId14 = classFound1[0].courseId;
+        if (courseId14 != courseId22) {
+          console.log("Error in filename");
+          return res
+            .status(200)
+            .json({ status: 400, msg: "Error in FileName" });
+        }
 
         everySBV.create(studentsData);
-      });
+        return res.status(200).json({ status: 200, msg: "Successfully Done" });
+      })
+      .catch((error) => {
+        console.log("Error in filename");
+        return res.status(200).json({ status: 400, msg: "Error in FileName" });
+      });;
 
     console.log("Hello SBV FILE uploaded");
   }

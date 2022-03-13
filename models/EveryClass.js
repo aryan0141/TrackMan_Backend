@@ -32,13 +32,16 @@ const everyClassSchema = new mongoose.Schema({
       duration: String,
     },
   ],
+  fileName: {
+    type: String,
+  },
 });
 
 function addZero(num) {
   return num < 10 ? `0${num}` : num;
 }
 
-everyClassSchema.statics.calcAverageRatings = async function (className,arrOfStudents,fileID1, date_1) {
+everyClassSchema.statics.calcAverageRatings = async function (className,arrOfStudents,fileID1, date_1, fileName) {
   console.log(className);
   //completeClass.findOne({name: className}).then( (classFound) =>{
   completeClass
@@ -181,7 +184,7 @@ everyClassSchema.statics.calcAverageRatings = async function (className,arrOfStu
       const obj11 = {
         fileId: fileID1,
         date: date_1,
-        filename: "coming_soon...",
+        filename: fileName,
         uploadTime: upload_time1,
         FileType: "csv",
       };
@@ -216,7 +219,8 @@ everyClassSchema.post("save", function () {
     this.className,
     this.arrOfStudents,
     this._id,
-    this.date
+    this.date,
+    this.fileName,
   );
   //	next();
 });

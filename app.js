@@ -6,6 +6,7 @@ const userRouter = require("./routes/userRoutes");
 const uploadRouter = require("./routes/uploadRoutes");
 const teacherRouter = require("./routes/teachersClassRoutes");
 const filenames = require("./routes/fileName");
+const StopWords = require("./routes/StopWordsRoutes.js");
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use("/api/users", userRouter);
 app.use("/api/uploadDoc" , uploadRouter);
 app.use("/api/teachers", teacherRouter);
 app.use("/api/fileNames" , filenames );
+app.use("/api/stopWords", StopWords);
 
 module.exports = app;
 

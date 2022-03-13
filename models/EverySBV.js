@@ -18,6 +18,9 @@ const everySBVSchema = new mongoose.Schema({
     type: String,
   },
   arrOfStudents: [{ name: String, comments: Number }],
+  fileName: {
+    type: String,
+  },
 });
 
 function addZero(num) {
@@ -25,7 +28,7 @@ function addZero(num) {
 }
 
 
-everySBVSchema.statics.calcAverageRatings = async function (className,arrOfStudents , fileID1) {
+everySBVSchema.statics.calcAverageRatings = async function (className,arrOfStudents , fileID1 , fileName , date11) {
   //find({ fileNames: { $elemMatch: { $eq: className } } });
   //completeClass.findOne({ name: className }).then((classFound) => {
     console.log(className);
@@ -73,8 +76,8 @@ everySBVSchema.statics.calcAverageRatings = async function (className,arrOfStude
           //console.log(upload_time1);
           const obj11 = {
             fileId: fileID1,
-            date: "coming_soon...",
-            filename: "coming_soon...",
+            date: date11,
+            filename: fileName,
             uploadTime: upload_time1,
             FileType: "sbv",
           };
@@ -107,7 +110,7 @@ everySBVSchema.statics.calcAverageRatings = async function (className,arrOfStude
 
 everySBVSchema.post("save", function () {
   //This points to current class that happened
-  this.constructor.calcAverageRatings(this.className, this.arrOfStudents ,  this._id);
+  this.constructor.calcAverageRatings(this.className, this.arrOfStudents ,  this._id , this.fileName, this.date);
   //	next();
 });
 
