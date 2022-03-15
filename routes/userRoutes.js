@@ -133,6 +133,11 @@ Router.get("/courseList/:email", async (req, resp, next) => {
   });
   const res = await classroom.courses.list({
     teacherId: "me",
+  }).catch(e => {
+    resp.json({ msg: "NoPermission", status: 400 });
+    console.log("error occurred");
+    console.error(e);
+    throw e;
   });
   //console.log(res);
   //   const auth = new google.auth.GoogleAuth({

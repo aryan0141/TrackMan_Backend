@@ -25,7 +25,7 @@ Router.get("/courseList/:email", async (req, resp, next) => {
     // console.log(email9);
     var currentUser = await User.findOne({ email: email9 });
     var RefreshToken = currentUser.refreshToken;
-    console.log(RefreshToken);
+    // console.log(RefreshToken);
 
   // User.findOne({email: email1} , function(err , user3){
   //   console.log(user3);
@@ -36,7 +36,13 @@ Router.get("/courseList/:email", async (req, resp, next) => {
     oauth2Client.setCredentials({ refresh_token: RefreshToken });
     const res = await classroom.courses.list({
       teacherId: "me",
-    });
+    })
+    // .catch(e => {
+    //   console.log("error occurred");
+    //   console.error(e);
+    //   throw e;
+    // });
+    
     console.log(res);
     //   const auth = new google.auth.GoogleAuth({
     //   scopes: [
