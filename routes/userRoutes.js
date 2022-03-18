@@ -119,26 +119,27 @@ Router.post("/create-tokens", async (req, res, next) => {
 });
 
 Router.get("/courseList/:email", async (req, resp, next) => {
-  // try {
+  try {
+    const email9 = req.params.email;
 
-  const email9 = req.params.email;
+    var currentUser = await User.findOne({ email: email9 });
+    var RefreshToken = currentUser.refreshToken;
+    //console.log(RefreshToken);
 
-  var currentUser = await User.findOne({ email: email9 });
-  var RefreshToken = currentUser.refreshToken;
-  //console.log(RefreshToken);
+    oauth2Client.setCredentials({
+      refresh_token: RefreshToken,
+      access_token: ac_t,
+    });
+    const res = await classroom.courses.list({
+      teacherId: "me",
+    });
 
-  oauth2Client.setCredentials({
-    refresh_token: RefreshToken,
-    access_token: ac_t,
-  });
-  const res = await classroom.courses.list({
-    teacherId: "me",
-  }).catch(e => {
-    resp.json({ msg: "NoPermission", status: 400 });
+    return resp.json(res.data);
+  } catch (e) {
+    return resp.json({ msg: "NoPermission", status: 400 });
     console.log("error occurred");
     console.error(e);
-    throw e;
-  });
+  }
   //console.log(res);
   //   const auth = new google.auth.GoogleAuth({
   //   scopes: [
@@ -152,7 +153,7 @@ Router.get("/courseList/:email", async (req, resp, next) => {
 
   // console.log(res.data);
   // const resp = await axios.get
-  resp.json(res.data);
+  // resp.json(res.data);
   // resp.send(res.data);
   // } catch (error) {
   //   next(error);
@@ -198,7 +199,12 @@ Router.get(
               .then((res) => {
                 //console.log(res.data.students[0].profile);
                 const students = res.data.students;
-                for (let x = 0; x < students.length; x++) {
+                if (!students || students.length === 0) {
+                  CompleteClass.create(class1);
+
+                  return resp.json({ msg: "success", status: 200 });
+                }
+                for (let x = 0; students && x < students.length; x++) {
                   class1.StudentsData.push({
                     name: students[x].profile.name.fullName,
                     duration: 0,

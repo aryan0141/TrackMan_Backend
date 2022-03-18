@@ -35,7 +35,7 @@ const CompleteClassSchema = new mongoose.Schema({
   },
   weightAge: {
     type: [],
-    default: [34 , 33, 33],
+    default: [40 , 30, 30],
   },
   totalClasses: {
     type: Number,
