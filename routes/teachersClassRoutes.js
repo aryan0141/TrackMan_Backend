@@ -19,7 +19,7 @@ const oauth2Client = new google.auth.OAuth2(
 );
 
 Router.get("/courseList/:email", async (req, resp, next) => {
-  // try {
+   try {
     // console.log(req.params.email);
     const email9 = req.params.email;
     // console.log(email9);
@@ -57,9 +57,9 @@ Router.get("/courseList/:email", async (req, resp, next) => {
   
     resp.json(res);
     // resp.send(res.data);
-  // } catch (error) {
-  //   next(error);
-  // }
+  } catch (error) {
+    next(error);
+  }
 });
 
 

@@ -4,14 +4,15 @@ const completeClass = require("./../models/CompleteClass");
 
 
 Router.post("/addFileName", async (req, res, next) => {
+  try{
     const {filename} = req.body;
-    console.log(filename);
+    // console.log(filename);
 
 
     completeClass.find({ fileNames: { $elemMatch: { $eq: filename.name } } }).then((classFound1) => {
         if(classFound1[0] == null)
         {
-            console.log("classfound is null");
+            // console.log("classfound is null");
             completeClass.findOne({ name: filename.classname }).then((classFound2) => {
                 //console.log(classFound2);
                 classFound2.fileNames.push(filename.name);
@@ -23,34 +24,38 @@ Router.post("/addFileName", async (req, res, next) => {
                     console.log("Error happened");
                     } else {
                       res.json({msg: "success" , status: 200});
-                      console.log("success");
+                      // console.log("success");
                     }
                   }
                 );
             });
             
         }else{
-            console.log("Filename is already registered");
+            //console.log("Filename is already registered");
             res.json({msg: "Already registered" , status: 400});
 
         }
           
     });
+  }catch(error){
+    next(error);
+  }
 })
 
 Router.post("/deleteFileName", async (req, res, next) => {
+  try{
   const { filename } = req.body;
-  console.log(filename);
+  //console.log(filename);
 
   completeClass.find({ fileNames: { $elemMatch: { $eq: filename.name } } }).then((classFound1) => {
       if (classFound1[0] == null) {
-        console.log("classfound is null");
+        //console.log("classfound is null");
         //res.status(400);
         res.json({ msg: "Already registered", status: 400 });
 
       } else {
 
-        console.log("Filename is already registered");
+        //console.log("Filename is already registered");
 
 
         completeClass.findOne({ name: filename.classname }).then((classFound2) => {
@@ -71,7 +76,7 @@ Router.post("/deleteFileName", async (req, res, next) => {
                 } else {
                   res.json({ msg: "success", status: 200 });
                   //res.status(200);
-                  console.log("successfully deleted");
+                  //console.log("successfully deleted");
                 }
             }
             );
@@ -81,12 +86,16 @@ Router.post("/deleteFileName", async (req, res, next) => {
         res.status(200);
       }
     });
+  }catch(error){
+    next(error);
+  }
 });
 
 Router.post("/updateCuttOffMin" , async(req , res , next) =>{
+  try{
     const { cuttOffMin1 } = req.body;
 
-    console.log(cuttOffMin1);
+    //console.log(cuttOffMin1);
     const cuttOffMin = Number(cuttOffMin1.cuttOffMin);
     const className1 = cuttOffMin1.className1;
 
@@ -111,13 +120,17 @@ Router.post("/updateCuttOffMin" , async(req , res , next) =>{
         }
       );
     })
+  }catch(error){
+    next(error);
+  }
 
-    console.log(cuttOffMin);
+    //console.log(cuttOffMin);
 });
 
 
 Router.post("/updateWeightageArr", async (req, res, next) => {
-  console.log("API called");
+  //console.log("API called");
+  try{
   const { weightAgeDoc } = req.body;
   const w1 = weightAgeDoc.w1;
   const w2 = weightAgeDoc.w2;
@@ -134,15 +147,18 @@ Router.post("/updateWeightageArr", async (req, res, next) => {
       function (err, docs) {
         if (err) {
           res.json({ msg: "Error happened", status: 400 });
-          console.log("Error happened");
+          //console.log("Error happened");
         } else {
           res.json({ msg: "success", status: 200 });
-          console.log("success on weightAge");
+          //console.log("success on weightAge");
         }
       }
     );
 
   })
+  }catch(error){
+    next(error);
+  }
 
 });
 

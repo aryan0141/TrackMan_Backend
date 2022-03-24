@@ -39,7 +39,7 @@ Router.post("/create-tokens", async (req, res, next) => {
         accessToken: tokens.access_token,
         refreshToken: tokens.refresh_token,
       };
-      console.log("Refresh Toeken", tokens.refresh_token);
+      //console.log("Refresh Toeken", tokens.refresh_token);
       const resp = await axios.get(
         `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${code1.accessToken}`
       );
