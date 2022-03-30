@@ -4,15 +4,16 @@ const { google } = require("googleapis");
 const User = require("./../models/userModel");
 const CompleteClass = require("./../models/CompleteClass");
 const axios = require("axios");
+const dotenv = require("dotenv");
+dotenv.config({ path: "../config.env" });
 
-const GOOGLE_CLIENT_ID =
-  "821931130263-d6pvkrhi1tjmcrmk2tdcbhp9mpgq3sqn.apps.googleusercontent.com";
-const GOOGLE_CLIENT_SECRET = "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";
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 
 const oauth2Client = new google.auth.OAuth2(
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
-  "http://localhost:3000"
+  process.env.FE_URL
 );
 
 const classroom = google.classroom({ version: "v1", auth: oauth2Client });
