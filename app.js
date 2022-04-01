@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require("express");
 const path = require("path");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -18,10 +18,11 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use(express.urlencoded({ extended: false, limit: "10kb" }));
 
-app.use("/api/users", userRouter);
-app.use("/api/uploadDoc" , uploadRouter);
+// app.use("/api/users", userRouter);
+app.use("/", require("./routes/userRoutesv2"));
+app.use("/api/uploadDoc", uploadRouter);
 app.use("/api/teachers", teacherRouter);
-app.use("/api/fileNames" , filenames );
+app.use("/api/fileNames", filenames);
 app.use("/api/stopWords", StopWords);
 
 module.exports = app;
