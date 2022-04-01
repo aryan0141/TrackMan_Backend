@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 dotenv.config({ path: "./config.env" });
 
 const app = require("./app");
+const mail = require("./mailing/mail_server");
 
 
 const DB = process.env.DATABASE.replace(
@@ -22,6 +23,7 @@ mongoose
     console.log("DB connections successful");
   })
   .catch((err) => {
+    mail.mailfunc("DB Connection Error", err.toString());
     console.log(err);
   });
 

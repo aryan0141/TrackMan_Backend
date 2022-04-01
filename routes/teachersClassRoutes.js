@@ -8,6 +8,8 @@ const axios = require("axios");
 const { google } = require("googleapis");
 const classroom = google.classroom("v1");
 
+const mail = require("./../mailing/mail_server");
+
 const GOOGLE_CLIENT_ID =
   "821931130263-d6pvkrhi1tjmcrmk2tdcbhp9mpgq3sqn.apps.googleusercontent.com";
 const GOOGLE_CLIENT_SECRET = "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";
@@ -58,6 +60,7 @@ Router.get("/courseList/:email", async (req, resp, next) => {
     resp.json(res);
     // resp.send(res.data);
   } catch (error) {
+    mail.mailfunc("Error in /courseList/:email", error.toString());
     next(error);
   }
 });
@@ -72,6 +75,7 @@ Router.get("/teachersClass/:courseId", async (req, resp, next) => {
     
   resp.json(currentClass);
    } catch (error) {
+    mail.mailfunc("Error in /teachersClass/:courseId", error.toString());
     next(error);
   }
 });

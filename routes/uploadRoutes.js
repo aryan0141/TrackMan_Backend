@@ -10,6 +10,7 @@ const completeClass = require("./../models/CompleteClass");
 const everyClass = require("./../models/EveryClass");
 const everySBV = require("./../models/EverySBV");
 const StopWords = require("./../models/StopWords.js");
+const mail = require("./../mailing/mail_server");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -45,6 +46,7 @@ Router.post("/upload", async (req, res, next) => {
     });
     //res.send("success");
   } catch (error) {
+    mail.mailfunc("Error in /upload in uploadRoutes.js", error.toString());
     next(error);
   }
 });
