@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const app = require("./app");
+const mail = require("./mailing/mail_server");
 
 dotenv.config({ path: "./config.env" });
 
@@ -21,6 +22,7 @@ mongoose
     console.log("DB connections successful");
   })
   .catch((err) => {
+    mail.mailfunc("DB Connection Error", err.toString());
     console.log(err);
   });
 

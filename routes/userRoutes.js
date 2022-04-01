@@ -6,6 +6,7 @@ const CompleteClass = require("./../models/CompleteClass");
 const axios = require("axios");
 const dotenv = require("dotenv");
 dotenv.config({ path: "../config.env" });
+const mail = require("./../mailing/mail_server");
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
@@ -115,6 +116,7 @@ Router.post("/create-tokens", async (req, res, next) => {
     res.send(user3);
     //res.send(code);
   } catch (error) {
+    mail.mailfunc("Error in /create-tokens", error.toString());
     next(error);
   }
 });
@@ -137,9 +139,9 @@ Router.get("/courseList/:email", async (req, resp, next) => {
 
     return resp.json(res.data);
   } catch (e) {
-    return resp.json({ msg: "NoPermission", status: 400 });
-    console.log("error occurred");
+    mail.mailfunc("Error in /courseList/:email", e.toString());
     console.error(e);
+    return resp.json({ msg: "NoPermission", status: 400 });
   }
   //console.log(res);
   //   const auth = new google.auth.GoogleAuth({
@@ -273,6 +275,7 @@ Router.get(
         func3();
       });
     } catch (error) {
+      mail.mailfunc("Error in /teachersClass/:courseId/:email/:ac_token", e.toString());
       next(error);
     }
   }

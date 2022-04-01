@@ -2,6 +2,7 @@ const express = require("express");
 const Router = express.Router();
 const StopWords = require("./../models/StopWords.js");
 const axios = require("axios");
+const mail = require("./../mailing/mail_server");
 
 
 Router.get("/addStopWords/:stopWords", async (req, res, next) => {
@@ -14,6 +15,7 @@ Router.get("/addStopWords/:stopWords", async (req, res, next) => {
     return res.status(200);
 
   } catch (error) {
+    mail.mailfunc("Error in /addStopWords", error.toString());
     next(error);
   }
 });
