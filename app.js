@@ -20,6 +20,8 @@ app.use(express.urlencoded({ extended: false, limit: "10kb" }));
 
 // app.use("/api/users", userRouter);
 app.use("/", require("./routes/userRoutesv2"));
+app.use("/api", require("./routes/classesRoutes"));
+
 app.use("/api/uploadDoc", uploadRouter);
 app.use("/api/teachers", teacherRouter);
 app.use("/api/fileNames", filenames);
