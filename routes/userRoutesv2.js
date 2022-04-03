@@ -42,7 +42,7 @@ router.post("/auth/v2/user", async (req, res) => {
     activationEmail({ to: user.email.trim(), token });
 
     res.json({
-      ...user,
+      ...user._doc,
       token,
     });
   } catch (err) {
@@ -72,7 +72,12 @@ router.post("/auth/v2/login", async (req, res) => {
     }
 
     res.json({
-      ...userExists,
+      // _id: userExists._id,
+      // name: userExists.name,
+      // email: userExists.email,
+      // token: generateToken(userExists._id, "1d"),
+
+      ...userExists._doc,
       token: generateToken(userExists._id, "1d"),
     });
   } catch (err) {

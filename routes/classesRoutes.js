@@ -55,4 +55,18 @@ Router.get("/getClasses", auth, async (req, res, next) => {
   }
 });
 
+Router.get("/getClass/:className", auth, async (req, res, next) => {
+  try {
+    console.log(req.user.email);
+    const Class = await completeClassv2.findOne({ teacher: req.user.email , name: req.params.className });
+    console.log(Class);
+    res.status(200).json(Class);
+  } catch (error) {
+    console.log(error);
+    // mail.mailfunc("Error in /addFileName", error.toString());
+    // next(error);
+  }
+});
+
+
 module.exports = Router;
