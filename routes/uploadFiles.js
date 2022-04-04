@@ -29,7 +29,7 @@ Router.post("/upload", auth, upload.array("files", 5),  function (req, res, next
   try {
     console.log("hi");
     var fileInfo = req.files;
-    var title = req.body.title;
+    // var title = req.body.title;
     // console.log(fileInfo);
 
     fileInfo.forEach(async (file) => {
@@ -44,7 +44,7 @@ Router.post("/upload", auth, upload.array("files", 5),  function (req, res, next
         const st1 = fileName.split(" - Attendance Report.csv");
         const st2 = st1[0];
         const st3 = st2.substring(17, st2.length);
-        console.log(st3);
+        // console.log(st3);
         var className1 = "";
         completeClassv2
           .find({ name: st3, teacher: req.user.email })

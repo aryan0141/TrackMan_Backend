@@ -117,7 +117,7 @@ everySBVv2Schema.statics.calcAverageRatings = async function (className, teacher
     });
 };
 
-everySBVv2Schema.post("save", function () {
+everySBVv2Schema.post("save", function (next) {
   //This points to current class that happened
   this.constructor.calcAverageRatings(
     this.className,

@@ -212,17 +212,11 @@ everyClassv2Schema.statics.calcAverageRatings = async function ( className,teach
     });
 };
 
-everyClassv2Schema.post("save", function () {
+everyClassv2Schema.post("save", function (next) {
   //This points to current class that happened
-  this.constructor.calcAverageRatings(
-    this.className,
-    this.teacher,
-    this.arrOfStudents,
-    this._id,
-    this.date,
-    this.fileName
-  );
-  	next();
+  console.log("POST HOOK CALLED HERE");
+  this.constructor.calcAverageRatings(this.className,this.teacher,this.arrOfStudents,this._id,this.date,this.fileName);
+    next();
 });
 
 const EveryClassv2 = mongoose.model("EveryClassv2", everyClassv2Schema);
