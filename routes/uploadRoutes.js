@@ -227,9 +227,7 @@ Router.post("/addClass", async (req, res, next) => {
     const date1 = name3.split("@")[1].split(" ")[0];
 
 
-    completeClass
-      .find({ fileNames: { $elemMatch: { $eq: name4 } } })
-      .then((classFound1) => {
+    completeClass.find({ fileNames: { $elemMatch: { $eq: name4 } } }).then((classFound1) => {
         var studentsData = {
           date: date1,
           className: classFound1[0].name,

@@ -7,6 +7,7 @@ const uploadRouter = require("./routes/uploadRoutes");
 const teacherRouter = require("./routes/teachersClassRoutes");
 const filenames = require("./routes/fileName");
 const StopWords = require("./routes/StopWordsRoutes.js");
+const uploadFiles = require("./routes/uploadFiles");
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use(express.urlencoded({ extended: false, limit: "10kb" }));
 // app.use("/api/users", userRouter);
 app.use("/", require("./routes/userRoutesv2"));
 app.use("/api", require("./routes/classesRoutes"));
+app.use("/api/uploadFiles", uploadFiles);
 
 app.use("/api/uploadDoc", uploadRouter);
 app.use("/api/teachers", teacherRouter);
