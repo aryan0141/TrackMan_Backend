@@ -172,7 +172,7 @@ Router.get("/updateData/:className/:teacher", auth, async (req, res, next) => {
              allSBV.forEach(async (classFound2) => {   
                                 const arrOfStudents = classFound2.arrOfStudents;
                                 const fileID1 = classFound2._id;
-                                const date_1 = classFound2.date;
+                                const date11 = classFound2.date;
                                 const fileName = classFound2.fileName;    
 
                       for (let x = 0; x < arrOfStudents.length; x++) {
@@ -210,13 +210,12 @@ Router.get("/updateData/:className/:teacher", auth, async (req, res, next) => {
                         uploadTime: upload_time1,
                         FileType: "sbv",
                       };
-                      //console.log(obj11);
+                      console.log(obj11);
                       classFound.uploadNames = [...classFound.uploadNames,obj11];
             })
 
 
-             await completeClassv2.findByIdAndUpdate(
-               classFound._id,
+             await completeClassv2.findByIdAndUpdate( classFound._id,
                {
                  totalClasses: classFound.totalClasses ,
                  totalDuration: classFound.totalDuration ,

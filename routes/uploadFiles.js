@@ -242,142 +242,180 @@ Router.post("/upload", auth, upload.array("files", 5),  function (req, res, next
 });
 
 
-Router.get("/deleteEveryClassv2/:courseName/:fileId", auth, async (req, res, next) => {
-  try {
-    console.log("API is called");
-    console.log(req.params.courseId, req.params.fileId);
-    completeClassv2
-      .findOne({ name: req.params.courseName , teacher: req.user.email})
-      .then((classFound) => {
-        everyClassv2.findById(req.params.fileId).then((fileFound) => {
-          console.log(classFound);
-          console.log(fileFound);
 
-          var maxDur1 = 0;
-
-          for (let x = 0; x < fileFound.arrOfStudents.length; x++) {
-            for (let y = 0; y < classFound.StudentsData.length; y++) {
-              if (x == fileFound.arrOfStudents.length - 1) {
-                const time22 = fileFound.arrOfStudents[x].duration;
-                var time33 = 0;
-                if (time22.includes("hr")) {
-                  const time44 = Number(time22.split("hr")[0]);
-                  time33 = time33 + time44 * 60;
-                  const time55 = time22.split("hr")[1];
-                  const time66 = Number(time55.split("min")[0]);
-                  time33 = time33 + time66;
-                } else if (time22.includes("min")) {
-                  const time77 = Number(time22.split("min")[0]);
-                  time33 = time33 + time77;
-                } else {
-                  time33 = 0;
-                }
-
-                maxDur1 = time33;
-              }
-
-              if (fileFound.arrOfStudents[x].email === classFound.StudentsData[y].email
-              ) {
-                const time2 = fileFound.arrOfStudents[x].duration;
-                var time3 = 0;
-                if (time2.includes("hr")) {
-                  const time4 = Number(time2.split("hr")[0]);
-                  time3 = time3 + time4 * 60;
-                  const time5 = time2.split("hr")[1];
-                  const time6 = Number(time5.split("min")[0]);
-                  time3 = time3 + time6;
-                } else if (time2.includes("min")) {
-                  const time7 = Number(time2.split("min")[0]);
-                  time3 = time3 + time7;
-                } else {
-                  time3 = 0;
-                }
-                if (time3 > fileFound.maxDur) {
-                  time3 = fileFound.maxDur;
-                }
-
-                classFound.StudentsData[y].duration =
-                  classFound.StudentsData[y].duration - time3;
-                if (time3 >= classFound.cutOffMins) {
-                  classFound.StudentsData[y].classesAttended =
-                    classFound.StudentsData[y].classesAttended - 1;
-                }
-              }
-            }
-          }
-          classFound.totalClasses = classFound.totalClasses - 1;
-          classFound.totalDuration = classFound.totalDuration - maxDur1;
-          classFound.uploadNames = classFound.uploadNames.filter(
-            (item) => item.fileId !== req.params.fileId
-          );
-          // classFound
-          completeClassv2.findByIdAndUpdate(
-            classFound._id,
-            {
-              totalClasses: classFound.totalClasses,
-              totalDuration: classFound.totalDuration,
-              StudentsData: classFound.StudentsData,
-              uploadNames: classFound.uploadNames,
-            },
-            function (err, docs) {
-              if (err) {
-                console.log("Error happened");
-              } else {
-                console.log("success");
-                res.json({ msg: "success", status: 200 });
-              }
-            }
-          );
-        });
+Router.get( "/deleteEveryClassv2/:courseName/:fileId", auth,async (req, res, next) => {
+    try {
+      console.log("API is called");
+      everyClassv2.findByIdAndRemove(req.params.fileId, function (err, docs) {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log(docs);
+        }
       });
-  } catch (error) {
-    next(error);
+      res.status(200).json({ msg: "Deleted", status: 200 });
+
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 Router.get("/deleteEveryClassSbv/:courseName/:fileId", auth, async (req, res, next) => {
   try {
-    console.log("API is called");
-    console.log(req.params.courseName, req.params.fileId);
-    completeClassv2.findOne({ name: req.params.courseName , teacher: req.user.email }).then((classFound) => {
-        everySBVv2.findById(req.params.fileId).then((fileFound) => {
-
-
-          for (let x = 0; x < fileFound.arrOfStudents.length; x++) {
-            for (let y = 0; y < classFound.StudentsData.length; y++) {
-
-              if (fileFound.arrOfStudents[x].name ===classFound.StudentsData[y].name ) {
-
-                classFound.StudentsData[y].comments = classFound.StudentsData[y].comments - fileFound.arrOfStudents[x].comments;
-              }
-            }
-          }
-      
-          classFound.uploadNames = classFound.uploadNames.filter((item) => 
-          item.fileId !== req.params.fileId
-          );
-        
-          completeClassv2.findByIdAndUpdate(classFound._id,
-            {
-              StudentsData: classFound.StudentsData,
-              uploadNames: classFound.uploadNames,
-            },
-            function (err, docs) {
-              if (err) {
-                console.log("Error happened");
-              } else {
-                console.log("success");
-                everySBVv2.findByIdAndDelete(req.params.fileId);
-                res.json({ msg: "success", status: 200 });
-              }
-            }
-          );
-        });
+      console.log("API is called");
+      everySBVv2.findByIdAndRemove(req.params.fileId, function (err, docs) {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log(docs);
+        }
       });
-  } catch (error) {
-    next(error);
-  }
+      res.status(200).json({ msg: "Deleted", status: 200 });
+
+    } catch (error) {
+      next(error);
+    }
+  
 });
+
+
+// Router.get("/deleteEveryClassv2/:courseName/:fileId", auth, async (req, res, next) => {
+//   try {
+//     console.log("API is called");
+//     console.log(req.params.courseId, req.params.fileId);
+//     completeClassv2
+//       .findOne({ name: req.params.courseName , teacher: req.user.email})
+//       .then((classFound) => {
+//         everyClassv2.findById(req.params.fileId).then((fileFound) => {
+//           console.log(classFound);
+//           console.log(fileFound);
+
+//           var maxDur1 = 0;
+
+//           for (let x = 0; x < fileFound.arrOfStudents.length; x++) {
+//             for (let y = 0; y < classFound.StudentsData.length; y++) {
+//               if (x == fileFound.arrOfStudents.length - 1) {
+//                 const time22 = fileFound.arrOfStudents[x].duration;
+//                 var time33 = 0;
+//                 if (time22.includes("hr")) {
+//                   const time44 = Number(time22.split("hr")[0]);
+//                   time33 = time33 + time44 * 60;
+//                   const time55 = time22.split("hr")[1];
+//                   const time66 = Number(time55.split("min")[0]);
+//                   time33 = time33 + time66;
+//                 } else if (time22.includes("min")) {
+//                   const time77 = Number(time22.split("min")[0]);
+//                   time33 = time33 + time77;
+//                 } else {
+//                   time33 = 0;
+//                 }
+
+//                 maxDur1 = time33;
+//               }
+
+//               if (fileFound.arrOfStudents[x].email === classFound.StudentsData[y].email
+//               ) {
+//                 const time2 = fileFound.arrOfStudents[x].duration;
+//                 var time3 = 0;
+//                 if (time2.includes("hr")) {
+//                   const time4 = Number(time2.split("hr")[0]);
+//                   time3 = time3 + time4 * 60;
+//                   const time5 = time2.split("hr")[1];
+//                   const time6 = Number(time5.split("min")[0]);
+//                   time3 = time3 + time6;
+//                 } else if (time2.includes("min")) {
+//                   const time7 = Number(time2.split("min")[0]);
+//                   time3 = time3 + time7;
+//                 } else {
+//                   time3 = 0;
+//                 }
+//                 if (time3 > fileFound.maxDur) {
+//                   time3 = fileFound.maxDur;
+//                 }
+
+//                 classFound.StudentsData[y].duration =
+//                   classFound.StudentsData[y].duration - time3;
+//                 if (time3 >= classFound.cutOffMins) {
+//                   classFound.StudentsData[y].classesAttended =
+//                     classFound.StudentsData[y].classesAttended - 1;
+//                 }
+//               }
+//             }
+//           }
+//           classFound.totalClasses = classFound.totalClasses - 1;
+//           classFound.totalDuration = classFound.totalDuration - maxDur1;
+//           classFound.uploadNames = classFound.uploadNames.filter(
+//             (item) => item.fileId !== req.params.fileId
+//           );
+//           // classFound
+//           completeClassv2.findByIdAndUpdate(
+//             classFound._id,
+//             {
+//               totalClasses: classFound.totalClasses,
+//               totalDuration: classFound.totalDuration,
+//               StudentsData: classFound.StudentsData,
+//               uploadNames: classFound.uploadNames,
+//             },
+//             function (err, docs) {
+//               if (err) {
+//                 console.log("Error happened");
+//               } else {
+//                 console.log("success");
+//                 res.json({ msg: "success", status: 200 });
+//               }
+//             }
+//           );
+//         });
+//       });
+//   } catch (error) {
+//     next(error);
+//   }
+// });
+
+// Router.get("/deleteEveryClassSbv/:courseName/:fileId", auth, async (req, res, next) => {
+//   try {
+//     console.log("API is called");
+//     console.log(req.params.courseName, req.params.fileId);
+//     completeClassv2.findOne({ name: req.params.courseName , teacher: req.user.email }).then((classFound) => {
+//         everySBVv2.findById(req.params.fileId).then((fileFound) => {
+
+
+//           for (let x = 0; x < fileFound.arrOfStudents.length; x++) {
+//             for (let y = 0; y < classFound.StudentsData.length; y++) {
+
+//               if (fileFound.arrOfStudents[x].name ===classFound.StudentsData[y].name ) {
+
+//                 classFound.StudentsData[y].comments = classFound.StudentsData[y].comments - fileFound.arrOfStudents[x].comments;
+//               }
+//             }
+//           }
+      
+//           classFound.uploadNames = classFound.uploadNames.filter((item) => 
+//           item.fileId !== req.params.fileId
+//           );
+        
+//           completeClassv2.findByIdAndUpdate(classFound._id,
+//             {
+//               StudentsData: classFound.StudentsData,
+//               uploadNames: classFound.uploadNames,
+//             },
+//             function (err, docs) {
+//               if (err) {
+//                 console.log("Error happened");
+//               } else {
+//                 console.log("success");
+//                 everySBVv2.findByIdAndDelete(req.params.fileId);
+//                 res.json({ msg: "success", status: 200 });
+//               }
+//             }
+//           );
+//         });
+//       });
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
 
 module.exports = Router;
