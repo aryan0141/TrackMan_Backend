@@ -12,6 +12,7 @@ const everySBVv2 = require("./../models/EverySBVv2.js");
 const StopWords = require("./../models/StopWords.js");
 const mail = require("./../mailing/mail_server");
 const { auth } = require("../utils/authMiddleware");
+// import axios from "axios";
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -29,7 +30,6 @@ Router.post("/upload", auth, upload.array("files", 5),  function (req, res, next
   try {
     console.log("hi");
     var fileInfo = req.files;
-    // var title = req.body.title;
     // console.log(fileInfo);
 
     fileInfo.forEach(async (file) => {
@@ -112,10 +112,12 @@ Router.post("/upload", auth, upload.array("files", 5),  function (req, res, next
                 }
                 //console.log(studentsData);
                 await everyClassv2.create(studentsData);
-                return res
-                  .status(200)
-                  .json({ status: 200, msg: "Successfully Done" });
+                
+                // return res
+                //   .status(200)
+                //   .json({ status: 200, msg: "Successfully Done" });
               });
+              //await axios.get(`http://localhost:4000/api/StudentsData/updateData/:className/:teacher`);
           })
           .catch((error) => {
             console.log("Error in filename");
@@ -194,9 +196,9 @@ Router.post("/upload", auth, upload.array("files", 5),  function (req, res, next
             };
 
             await everySBVv2.create(studentsData);
-            return res
-              .status(200)
-              .json({ status: 200, msg: "Successfully Done" });
+            // return res
+            //   .status(200)
+            //   .json({ status: 200, msg: "Successfully Done" });
           })
           .catch((error) => {
             console.log("Error in filename");

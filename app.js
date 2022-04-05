@@ -8,6 +8,7 @@ const teacherRouter = require("./routes/teachersClassRoutes");
 const filenames = require("./routes/fileName");
 const StopWords = require("./routes/StopWordsRoutes.js");
 const uploadFiles = require("./routes/uploadFiles");
+const StudentsData = require("./routes/updateData");
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use("/api/uploadDoc", uploadRouter);
 app.use("/api/teachers", teacherRouter);
 app.use("/api/fileNames", filenames);
 app.use("/api/stopWords", StopWords);
+app.use("/api/studentsData" , StudentsData);
 
 module.exports = app;
 

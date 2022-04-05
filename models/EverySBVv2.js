@@ -117,18 +117,18 @@ everySBVv2Schema.statics.calcAverageRatings = async function (className, teacher
     });
 };
 
-everySBVv2Schema.post("save", function (next) {
-  //This points to current class that happened
-  this.constructor.calcAverageRatings(
-    this.className,
-    this.teacher,
-    this.arrOfStudents,
-    this._id,
-    this.fileName,
-    this.date
-  );
-  //	next();
-});
+// everySBVv2Schema.post("save", function (next) {
+//   //This points to current class that happened
+//   this.constructor.calcAverageRatings(
+//     this.className,
+//     this.teacher,
+//     this.arrOfStudents,
+//     this._id,
+//     this.fileName,
+//     this.date
+//   );
+//   //	next();
+// });
 
 const EverySBVv2 = mongoose.model("EverySBVv2", everySBVv2Schema);
 
