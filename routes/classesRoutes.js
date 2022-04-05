@@ -8,6 +8,7 @@ const { auth } = require("../utils/authMiddleware");
 // @Access  Private
 Router.post("/createClass", auth, async (req, res, next) => {
   try {
+    console.log("route called");
     const { createClass } = req.body;
     const res1 = await completeClassv2.find(
       { name: createClass.courseName, teacher: createClass.teacherName },
@@ -43,9 +44,9 @@ Router.post("/createClass", auth, async (req, res, next) => {
 Router.get("/getClasses", auth, async (req, res, next) => {
   try {
 
-    console.log(req.user.email);
+    // console.log(req.user.email);
     const allClasses = await completeClassv2.find({ teacher: req.user.email});
-    console.log(allClasses);
+    // console.log(allClasses);
     res.status(200).json(allClasses);
    
   } catch (error) {
@@ -59,7 +60,7 @@ Router.get("/getClass/:className", auth, async (req, res, next) => {
   try {
     console.log(req.user.email);
     const Class = await completeClassv2.findOne({ teacher: req.user.email , name: req.params.className });
-    console.log(Class);
+    // console.log(Class);
     res.status(200).json(Class);
   } catch (error) {
     console.log(error);
