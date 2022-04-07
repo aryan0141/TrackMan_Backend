@@ -1,0 +1,197 @@
+00:00:02.826,00:00:05.826
+Sushil Kumar Dwivedi (MT19AIE323): Good afternoon sir
+
+00:02:12.051,00:02:15.051
+Ranjan Kumar (MT19AIE295): independent small unit of service
+
+00:02:21.623,00:02:24.623
+Sushil Kumar Surana (MT19AIE324): section of small services
+
+00:02:21.856,00:02:24.856
+Ridhima Kohli (B19CSE071): various functions are distributed in different parts as microservices
+
+00:02:23.750,00:02:26.750
+Abhijit S Iyer (M21CS001): Only the essential services are put together in a module
+
+00:03:23.134,00:03:26.134
+Jimmi Sinha (MT19AIE247): Single responsibility principle
+
+00:03:25.079,00:03:28.079
+Apoorv Pal (B19CSE102): in microservices, individual independent services could exist even on separate servers and services interact with each other via a well-defined interface
+
+00:03:25.722,00:03:28.722
+Abhilash Sharma (MT19AIE202): It is a complete functionality/feature in itself and has its own database
+
+00:03:31.323,00:03:34.323
+Surbhi Dua (B19CSE088): independent services 
+
+00:03:47.349,00:03:50.349
+Shubham Singh (M21CS016): for ex. multiple browsers used in mobile phone 
+
+00:04:18.733,00:04:21.733
+Shivam Kumar (B19CSE118): do they have to be independent?
+
+00:05:45.854,00:05:48.854
+Saptashrungi Birajdar (B19CSE076): a service is broader while microservice has small tasks
+
+00:05:54.664,00:05:57.664
+Sai Vamsi Puttu (MT19AIE303): if its serves part of the functionality but not the entire service
+
+00:05:59.347,00:06:02.347
+Sushil Kumar Surana (MT19AIE324): may be when it provides output which is not complete and has to be consumed by some other microservice
+
+00:06:13.210,00:06:16.210
+Abhilash Sharma (MT19AIE202): Sir, by complete I mean single responsibility
+
+00:07:07.998,00:07:10.998
+Abhijit S Iyer (M21CS001): Taking user input (webpage)
+
+Verification of credentials
+
+00:07:09.697,00:07:12.697
+Saptashrungi Birajdar (B19CSE076): checking if the email is valid - can be a microservice
+
+00:07:11.761,00:07:14.761
+Shivam Kumar (B19CSE118): take input, match passwords
+
+00:07:15.430,00:07:18.430
+Jagadeesh P N (MT19AIE246): auth service, Identity provider service
+
+00:07:23.673,00:07:26.673
+Amit Kumar Sharma (M20AIE213): Authentications 
+
+00:07:26.514,00:07:29.514
+Ridhima Kohli (B19CSE071): authentication and open dashboard after it for user
+
+00:07:26.793,00:07:29.793
+Abhilash Sharma (MT19AIE202): Authentication, token generation
+
+00:07:28.317,00:07:31.317
+Puja Gupta (M21MA004): token verification
+
+00:07:29.587,00:07:32.587
+Durgesh Nath (MT19AIE235): Authentication 
+
+00:07:33.355,00:07:36.355
+Saptashrungi Birajdar (B19CSE076): encryption
+
+00:07:40.021,00:07:43.021
+Apoorv Pal (B19CSE102): Roles and Permissions/Authorization
+
+00:14:43.447,00:14:46.447
+Shivam Kumar (B19CSE118): all are interacting with each other in MVC
+
+00:14:44.281,00:14:47.281
+Anshul Goyal (B19CSE012): it is not one way communication?
+
+00:14:50.074,00:14:53.074
+Ashish Jacob Sam (M21CS003): Because all components are interconnected
+
+00:14:51.446,00:14:54.446
+Sarthak Raj Jindal (B19CSE078): bidirectional 
+
+00:16:05.752,00:16:08.752
+Sachin Tyagi (MT19AIE302): separation of concerns
+
+00:16:19.939,00:16:22.939
+Anshul Goyal (B19CSE012): layer woulld be slower
+
+00:16:20.339,00:16:23.339
+Amit Kumar Sharma (M20AIE213): Business logic code reusabality
+
+00:16:29.755,00:16:32.755
+Sasikanth Kotti (MT19AIE308): Maintenance of individual components
+
+00:16:34.567,00:16:37.567
+Vivek Saini (MT19AIE332): Faster computations
+
+00:16:35.958,00:16:38.958
+Ridhima Kohli (B19CSE071): easy debugging due to separation of Ui and controller
+
+00:16:39.437,00:16:42.437
+Ranjan Kumar (MT19AIE295): helps in achieve cohesion and reduce coupling
+
+00:16:40.175,00:16:43.175
+Suresh Bojjam (M20AIE313): simplifies the testing individual components
+
+00:16:45.328,00:16:48.328
+Ashish Jacob Sam (M21CS003): It separates Model from content. This way, multiple other service can access model without interfereing with each other
+
+00:17:15.112,00:17:18.112
+Shivam Kumar (B19CSE118): what is business logic code?
+
+00:18:00.806,00:18:03.806
+Abhilash Sharma (MT19AIE202): Code testability
+
+00:23:22.821,00:23:25.821
+Saptashrungi Birajdar (B19CSE076): How view changes model directly?
+
+00:24:47.829,00:24:50.829
+Patel Darsh Babubhai (B19CSE115): 3-tier also provide independence in form of layers as advantage, then how MVC is better?
+
+00:25:20.318,00:25:23.318
+Vivek Saini (MT19AIE332): Sir what are commercial applications of MVC ?
+
+00:28:57.848,00:29:00.848
+Shivam Kumar (B19CSE118): will we cover restful in detail later on in the course?
+
+00:31:12.671,00:31:15.671
+Apoorv Pal (B19CSE102): for components that do not require access to saved data in the database, view could interact with the controller directly
+
+00:37:41.856,00:37:44.856
+Shubham Singh (M21CS016): yes sir
+
+00:37:44.631,00:37:47.631
+Sasikanth Kotti (MT19AIE308): ETL appears to be following this pattern....
+
+00:38:04.221,00:38:07.221
+Shivam Kumar (B19CSE118): filter may also change the incoming data
+
+00:38:19.877,00:38:22.877
+Suresh Bojjam (M20AIE313): can you give one more example for pipe-and-filter
+
+00:40:31.027,00:40:34.027
+Suresh Bojjam (M20AIE313): Sir, mapReduce follows the pipe-and-filter pattern?
+
+00:41:55.528,00:41:58.528
+Suresh Bojjam (M20AIE313): yes sir. thanks.
+
+00:42:42.721,00:42:45.721
+Ranjan Kumar (MT19AIE295): yes
+
+00:43:20.836,00:43:23.836
+Shubham Singh (M21CS016): lexical analyzer, syntax analyzer and code generation kind of things will be performed in this pattern ??
+
+00:45:00.992,00:45:03.992
+Shubham Singh (M21CS016): ok sir
+
+00:49:26.804,00:49:29.804
+Apoorv Pal (B19CSE102): Is WebRTC a form of peer-to-peer?
+
+00:58:17.336,00:58:20.336
+Sushil Kumar Surana (MT19AIE324): 22 Jan will be too early.. may be a couple of more classes.. if possible??
+
+00:58:40.539,00:58:43.539
+Sachin Tyagi (MT19AIE302): yes, just have same timing for all class your and ram sir whatever it is so that we can plan 
+
+00:59:17.622,00:59:20.622
+Sushil Kumar Surana (MT19AIE324): yes.. but we are not aware what exactly we will be studying.. so a few more classes will help us form it better..
+
+00:59:56.045,00:59:59.045
+Sushil Kumar Surana (MT19AIE324): 👍
+
+01:01:03.661,01:01:06.661
+Durgesh Nath (MT19AIE235): Thank you Sir 
+
+01:01:04.477,01:01:07.477
+Abhilash Sharma (MT19AIE202): Thank you sir!
+
+01:01:07.601,01:01:10.601
+Sasikanth Kotti (MT19AIE308): Thankyou Sir...
+
+01:01:07.998,01:01:10.998
+Sushil Kumar Surana (MT19AIE324): thank you si
+
+01:01:09.462,01:01:12.462
+Abhijit S Iyer (M21CS001): Thank you sir
+
