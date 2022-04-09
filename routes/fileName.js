@@ -1,22 +1,19 @@
 const express = require("express");
 const Router = express.Router();
-const completeClass = require("./../models/CompleteClass");
+const completeClassv2 = require("./../models/CompleteClassv2");
 const mail = require("./../mailing/mail_server");
+const { auth } = require("../utils/authMiddleware");
 
 Router.post("/addFileName", async (req, res, next) => {
   try {
     const { filename } = req.body;
-    // console.log(filename);
-
     completeClass
       .find({ fileNames: { $elemMatch: { $eq: filename.name } } })
       .then((classFound1) => {
         if (classFound1[0] == null) {
-          // console.log("classfound is null");
           completeClass
             .findOne({ name: filename.classname })
             .then((classFound2) => {
-              //console.log(classFound2);
               classFound2.fileNames.push(filename.name);
               completeClass.findByIdAndUpdate(
                 classFound2._id,
@@ -29,7 +26,6 @@ Router.post("/addFileName", async (req, res, next) => {
                     console.log("Error happened");
                   } else {
                     res.json({ msg: "success", status: 200 });
-                    // console.log("success");
                   }
                 }
               );
@@ -95,16 +91,18 @@ Router.post("/deleteFileName", async (req, res, next) => {
   }
 });
 
-Router.post("/updateCuttOffMin", async (req, res, next) => {
+Router.post("/updateCuttOffMin", auth, async (req, res, next) => {
   try {
     const { cuttOffMin1 } = req.body;
-
+    // console.log(cuttoffMin1);
     //console.log(cuttOffMin1);
     const cuttOffMin = Number(cuttOffMin1.cuttOffMin);
     const className1 = cuttOffMin1.className1;
+    
+    const teacherName = req.user.email;
 
-    completeClass.findOne({ name: className1 }).then((resp) => {
-      completeClass.findByIdAndUpdate(
+    completeClassv2.findOne({ name: className1 , teacher: teacherName }).then((resp) => {
+      completeClassv2.findByIdAndUpdate(
         resp._id,
         {
           cutOffMins: cuttOffMin,
@@ -131,8 +129,8 @@ Router.post("/updateCuttOffMin", async (req, res, next) => {
   //console.log(cuttOffMin);
 });
 
-Router.post("/updateWeightageArr", async (req, res, next) => {
-  //console.log("API called");
+Router.post("/updateWeightageArr", auth,  async (req, res, next) => {
+  // console.log("API called");
   try {
     const { weightAgeDoc } = req.body;
     const w1 = weightAgeDoc.w1;
@@ -141,8 +139,10 @@ Router.post("/updateWeightageArr", async (req, res, next) => {
     const className2 = weightAgeDoc.className2;
     const arr23 = [w1, w2, w3];
 
-    completeClass.findOne({ name: className2 }).then((classFound2) => {
-      completeClass.findByIdAndUpdate(
+    const teacherName = req.user.email;
+
+    completeClassv2.findOne({ name: className2 , teacher: teacherName }).then((classFound2) => {
+      completeClassv2.findByIdAndUpdate(
         classFound2._id,
         {
           weightAge: arr23,

@@ -20,7 +20,7 @@ const activationEmail = async ({ to, token }) => {
       name: "Activation Link",
       email: SENDER_EMAIL,
     },
-    subject: "Activate your account",
+    subject: "Activate your account [Trackman]",
     html: activationTemplate(URL, token),
   };
   try {

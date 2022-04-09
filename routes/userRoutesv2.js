@@ -2,6 +2,7 @@ const router = require("express").Router();
 const jwt = require("jsonwebtoken");
 const bcryptjs = require("bcryptjs");
 const { auth } = require("../utils/authMiddleware");
+const mail = require("./../mailing/mail_server");
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
@@ -46,6 +47,7 @@ router.post("/auth/v2/user", async (req, res) => {
       token,
     });
   } catch (err) {
+    mail.mailfunc("Error in /auth/v2/user", err.toString());
     res.status(400).json({ err: err.message });
   }
 });
@@ -81,6 +83,7 @@ router.post("/auth/v2/login", async (req, res) => {
       token: generateToken(userExists._id, "1d"),
     });
   } catch (err) {
+    mail.mailfunc("Error in /auth/v2/login", err.toString());
     res.status(400).json({ err: err.message });
   }
 });
@@ -102,6 +105,7 @@ router.get("/auth/v2/send-activation-link", auth, async (req, res) => {
 
     res.status(200).json({ msg: "Activation Link Sent to your email" });
   } catch (err) {
+    mail.mailfunc("Error in /auth/v2/send-activation-link", err.toString());
     res.status(400).json({ err: err.message });
   }
 });
@@ -135,6 +139,7 @@ router.get("/auth/activate/:token", auth, async (req, res) => {
     await userExists.save();
     res.status(200).json(userExists);
   } catch (err) {
+    mail.mailfunc("Error in /auth/activate/:token", err.toString());
     res.status(400).json({ err: err.message });
   }
 });

@@ -26,7 +26,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 //.single("file");
 
-Router.post("/upload", auth, upload.array("files", 10),  function (req, res, next) {
+Router.post("/upload", auth, upload.array("files", 20),  function (req, res, next) {
   try {
     console.log("hi");
     var fileInfo = req.files;
@@ -236,7 +236,7 @@ Router.post("/upload", auth, upload.array("files", 10),  function (req, res, nex
     // });
     
   } catch (error) {
-    mail.mailfunc("Error in /upload in uploadRoutes.js", error.toString());
+    mail.mailfunc("Error in /upload", error.toString());
     next(error);
   }
 });
@@ -256,6 +256,7 @@ Router.get( "/deleteEveryClassv2/:courseName/:fileId", auth,async (req, res, nex
       res.status(200).json({ msg: "Deleted", status: 200 });
 
     } catch (error) {
+      mail.mailfunc("Error in /deleteEveryClassv2/:courseName/:fileId", error.toString());
       next(error);
     }
   }
@@ -263,7 +264,6 @@ Router.get( "/deleteEveryClassv2/:courseName/:fileId", auth,async (req, res, nex
 
 Router.get("/deleteEveryClassSbv/:courseName/:fileId", auth, async (req, res, next) => {
   try {
-      console.log("API is called");
       everySBVv2.findByIdAndRemove(req.params.fileId, function (err, docs) {
         if (err) {
           console.log(err);
@@ -274,6 +274,7 @@ Router.get("/deleteEveryClassSbv/:courseName/:fileId", auth, async (req, res, ne
       res.status(200).json({ msg: "Deleted", status: 200 });
 
     } catch (error) {
+      mail.mailfunc("Error in /deleteEveryClassSbv/:courseName/:fileId", error.toString());
       next(error);
     }
   

@@ -13,7 +13,6 @@ function addZero(num) {
 }
 
 Router.get("/updateData/:className/:teacher", auth, async (req, res, next) => {
-    console.log("updating data api called");
   try {
     const className2 = req.params.className;
     const teacher = req.params.teacher;
@@ -238,7 +237,7 @@ Router.get("/updateData/:className/:teacher", auth, async (req, res, next) => {
 
     res.status(200);
   } catch (error) {
-    mail.mailfunc("Error in /addStopWords", error.toString());
+    mail.mailfunc("Error in /updateData/:className/:teacher", error.toString());
     next(error);
   }
 });
