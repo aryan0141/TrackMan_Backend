@@ -4,18 +4,19 @@ const completeClassv2 = require("./../models/CompleteClassv2");
 const mail = require("./../mailing/mail_server");
 const { auth } = require("../utils/authMiddleware");
 
-Router.post("/addFileName", async (req, res, next) => {
+Router.post("/addFileName", auth ,async (req, res, next) => {
   try {
     const { filename } = req.body;
-    completeClass
-      .find({ fileNames: { $elemMatch: { $eq: filename.name } } })
+    completeClassv2
+      .find({ fileNames: { $elemMatch: { $eq: filename.name } } , teacher: req.user.email })
       .then((classFound1) => {
+        console.log(classFound1);
         if (classFound1[0] == null) {
-          completeClass
-            .findOne({ name: filename.classname })
+          completeClassv2
+            .findOne({ name: filename.classname , teacher: req.user.email })
             .then((classFound2) => {
               classFound2.fileNames.push(filename.name);
-              completeClass.findByIdAndUpdate(
+              completeClassv2.findByIdAndUpdate(
                 classFound2._id,
                 {
                   fileNames: classFound2.fileNames,
