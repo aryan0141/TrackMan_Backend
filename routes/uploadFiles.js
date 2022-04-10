@@ -47,7 +47,7 @@ Router.post("/upload", auth, upload.array("files", 20),  function (req, res, nex
         // console.log(st3);
         var className1 = "";
         completeClassv2
-          .find({ name: st3, teacher: req.user.email })
+          .find({ fileNames: { $elemMatch: { $eq: st3 } } , teacher: req.user.email })
           .then((classFound11) => {
             //console.log(classFound11);
             className1 = classFound11[0].name;
@@ -185,7 +185,7 @@ Router.post("/upload", auth, upload.array("files", 20),  function (req, res, nex
         const date1 = name3.split("@")[1].split(" ")[0];
 
         completeClassv2
-          .find({ name: name4, teacher: req.user.email })
+          .find({ fileNames: { $elemMatch: { $eq: name4 } } , teacher: req.user.email })
           .then(async (classFound1) => {
             var studentsData = {
               date: date1,
