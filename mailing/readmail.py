@@ -6,6 +6,7 @@ import requests
 import os
 import smtplib
 from dotenv import load_dotenv
+from apscheduler.schedulers.blocking import BlockingScheduler
 load_dotenv()
 
 username = os.getenv('EMAILID')
@@ -94,7 +95,7 @@ def readMail(imap, lst, i):
 
             print("="*100)
 
-if __name__ == "__main__":
+def getReadQuery():
     try:
         imap = imaplib.IMAP4_SSL("imap.gmail.com")
         imap.login(username, password)
@@ -105,11 +106,21 @@ if __name__ == "__main__":
         lst = []
         for i in range(N):
             lst.append(messages[0].split()[i])
+        
+        if(len(lst)==0):
+            print("No unread mails found!")
+            return
 
         for i in range(0, len(lst)):
             # fetch the email message by ID
             readMail(imap, lst, i)
         imap.close()
         imap.logout()
+        print("Emails read succesfully!")
     except Exception as e:
         sendErrorMail("Error Connecting IMAP", e)
+
+if __name__ == "__main__":
+    scheduler = BlockingScheduler()
+    scheduler.add_job(getReadQuery, 'interval', seconds=20)
+    scheduler.start()
