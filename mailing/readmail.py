@@ -7,6 +7,7 @@ import os
 import smtplib
 from dotenv import load_dotenv
 from apscheduler.schedulers.blocking import BlockingScheduler
+import json
 load_dotenv()
 
 username = os.getenv('EMAILID')
@@ -24,12 +25,23 @@ def extractTeachersEmail(From):
 def sendPOSTRequest(filepath, teacherEmail):
     url = 'http://localhost:4000/api/uploadFiles/readForwardedMails'
     data = {'filepath': filepath,
-            'teacherEmail': teacherEmail, 'APIKEY': secret_key}
+            'teacherEmail': teacherEmail, 'SECRETKEY': secret_key}
     res = requests.post(url, data=data)
     if(res.status_code == 400):
         sendErrorMail("Error In Route", res.text)
         return
-    print(res.text)
+    if(res.status_code == 200):
+        obj = eval(res.text)
+        className = obj["msg"]
+        data = {'className': className,
+            'teacher': teacherEmail, 'SECRETKEY': secret_key}
+        newURL = f"http://localhost:4000/api/StudentsData/updateDataForwardedMails"
+        res = requests.post(newURL, data=data)
+        print(res.text)
+    else:
+        sendErrorMail("Error Occured in uploading a file", res.text)
+        return
+    # print(res.text)
 
 def sendErrorMail(subject, message):
     li = ["garg.10@iitj.ac.in"]
@@ -75,7 +87,11 @@ def readMail(imap, lst, i):
                         # print(body)
                     elif "attachment" in content_disposition:
                         filename = part.get_filename()
-                        updatedFilename = filename.replace(":", "_", 1)
+                        updatedFilename = ""
+                        if filename.find(':') == -1:
+                            updatedFilename = filename
+                        else:
+                            updatedFilename = filename.replace(":", "_", 1)
                         if filename:
                             try:
                                 folder_name = os.getenv('FOLDER_PATH')
@@ -116,11 +132,11 @@ def getReadQuery():
             readMail(imap, lst, i)
         imap.close()
         imap.logout()
-        print("Emails read succesfully!")
     except Exception as e:
         sendErrorMail("Error Connecting IMAP", e)
 
 if __name__ == "__main__":
-    scheduler = BlockingScheduler()
-    scheduler.add_job(getReadQuery, 'interval', seconds=20)
-    scheduler.start()
+    getReadQuery()
+    # scheduler = BlockingScheduler()
+    # scheduler.add_job(getReadQuery, 'interval', seconds=20)
+    # scheduler.start()
