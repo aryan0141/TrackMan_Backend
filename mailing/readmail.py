@@ -137,5 +137,5 @@ def getReadQuery():
 
 if __name__ == "__main__":
     scheduler = BlockingScheduler()
-    scheduler.add_job(getReadQuery, 'interval', seconds=600)
+    scheduler.add_job(getReadQuery, 'interval', seconds=os.getenv('CRONJOB_TIME_SEC'))
     scheduler.start()
