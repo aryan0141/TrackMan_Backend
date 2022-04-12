@@ -136,7 +136,6 @@ def getReadQuery():
         sendErrorMail("Error Connecting IMAP", e)
 
 if __name__ == "__main__":
-    getReadQuery()
-    # scheduler = BlockingScheduler()
-    # scheduler.add_job(getReadQuery, 'interval', seconds=20)
-    # scheduler.start()
+    scheduler = BlockingScheduler()
+    scheduler.add_job(getReadQuery, 'interval', seconds=600)
+    scheduler.start()
