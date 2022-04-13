@@ -42,13 +42,13 @@ Router.post("/addFileName", auth ,async (req, res, next) => {
   }
 });
 
-Router.post("/deleteFileName", async (req, res, next) => {
+Router.post("/deleteFileName", auth ,async (req, res, next) => {
   try {
     const { filename } = req.body;
     //console.log(filename);
 
-    completeClass
-      .find({ fileNames: { $elemMatch: { $eq: filename.name } } })
+    completeClassv2
+      .find({ fileNames: { $elemMatch: { $eq: filename.name } } , teacher: req.user.email })
       .then((classFound1) => {
         if (classFound1[0] == null) {
           //console.log("classfound is null");
@@ -57,7 +57,7 @@ Router.post("/deleteFileName", async (req, res, next) => {
         } else {
           //console.log("Filename is already registered");
 
-          completeClass
+          completeClassv2
             .findOne({ name: filename.classname })
             .then((classFound2) => {
               //console.log(classFound2);
@@ -65,7 +65,7 @@ Router.post("/deleteFileName", async (req, res, next) => {
               classFound2.fileNames = classFound2.fileNames.filter(
                 (v) => v !== filename.name
               );
-              completeClass.findByIdAndUpdate(
+              completeClassv2.findByIdAndUpdate(
                 classFound2._id,
                 {
                   fileNames: classFound2.fileNames,

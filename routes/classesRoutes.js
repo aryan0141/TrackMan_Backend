@@ -11,7 +11,8 @@ Router.post("/createClass", auth, async (req, res, next) => {
     console.log("route called");
     const { createClass } = req.body;
     const res1 = await completeClassv2.find(
-      { name: createClass.courseName, teacher: createClass.teacherName },
+      { fileNames: { $elemMatch: { $eq: createClass.courseName } },  teacher: createClass.teacherName },
+      // { name: createClass.courseName, teacher: createClass.teacherName },
       { limit: 1 }
     );
     if (res1.length === 0) {
