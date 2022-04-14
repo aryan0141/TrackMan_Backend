@@ -469,6 +469,7 @@ Router.post("/readForwardedMails", async (req, res, next) => {
       }
     }
   } catch(error) {
+    mail.mailfunc("Error in /readForwardedMails", error.toString());
     res.status(200).json({msg: "Some Error Occured", status: 400})
     next(error);
   }

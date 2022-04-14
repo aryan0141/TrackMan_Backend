@@ -440,6 +440,7 @@ Router.get("/deleteEveryClassSbv/:courseId/:fileId", async (req, res, next) => {
         });
       });
   } catch (error) {
+    
     next(error);
   }
 });
