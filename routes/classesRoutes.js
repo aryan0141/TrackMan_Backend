@@ -71,4 +71,38 @@ Router.get("/getClass/:className", auth, async (req, res, next) => {
 });
 
 
+Router.get("/deleteClass/:className", auth, async (req, res, next) => {
+
+  //console.log("Route called");
+
+  try {
+    res1 = await completeClassv2.find({ teacher: req.user.email , name: req.params.className });
+    if(res1){
+      const classId = res1[0]._id;
+      // console.log(classId );
+
+      await completeClassv2.findByIdAndRemove(classId, function (err, docs) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log("Deleted");
+      }
+    });
+    return res.status(200).json({ msg: "Deleted", status: 200 });
+    }
+
+    
+
+
+  } catch (error) {
+    
+    mail.mailfunc("Error in /deleteEveryClassv2/:courseName/:fileId", error.toString());
+    return res.status(400).json({ msg: "Error", status: 400 });
+    next(error);
+  }
+
+});
+
+
+
 module.exports = Router;
