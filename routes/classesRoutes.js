@@ -1,6 +1,8 @@
 const express = require("express");
 const Router = express.Router();
 const completeClassv2 = require("../models/CompleteClassv2");
+const everyClassv2 = require("./../models/EveryClassv2");
+const everySBVv2 = require("./../models/EverySBVv2.js");
 const { auth } = require("../utils/authMiddleware");
 
 // @Desc    Creates class
@@ -81,13 +83,45 @@ Router.get("/deleteClass/:className", auth, async (req, res, next) => {
       const classId = res1[0]._id;
       // console.log(classId );
 
-      await completeClassv2.findByIdAndRemove(classId, function (err, docs) {
+      await completeClassv2.findByIdAndRemove(classId, async function (err, docs) {
       if (err) {
         console.log(err);
       } else {
         console.log("Deleted");
-      }
+
+        const len1 = res1[0].uploadNames.length;
+        for(let x = 0 ; x<len1 ; x++){
+          const id1 = res1[0].uploadNames[x].fileId;
+          const ext = res1[0].uploadNames[x].filename.split(".")[1];
+          if(ext ==="csv"){
+
+            await everyClassv2.findByIdAndRemove(id1, function (err, docs) {
+              if (err) {
+                console.log(err);
+              } else {
+                console.log("Deleted");
+              }
+
+          });
+          }
+          else if(ext ==="sbv"){
+
+            await everySBVv2.findByIdAndRemove(id1, function (err, docs) {
+              if (err) {
+                console.log(err);
+              } else {
+                console.log("Deleted");
+              }
+
+          });
+          }
+        }
+        }
+      
+        
+      
     });
+    
     return res.status(200).json({ msg: "Deleted", status: 200 });
     }
 

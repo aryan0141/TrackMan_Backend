@@ -30,7 +30,7 @@ def sendPOSTRequest(filepath, teacherEmail):
     if(res.status_code == 400):
         sendErrorMail("Error In Route", res.text)
         return
-    if(res.status_code == 200):
+    elif(res.status_code == 200):
         obj = eval(res.text)
         className = obj["msg"]
         data = {'className': className,
@@ -38,6 +38,8 @@ def sendPOSTRequest(filepath, teacherEmail):
         newURL = f"http://localhost:4000/api/StudentsData/updateDataForwardedMails"
         res = requests.post(newURL, data=data)
         print(res.text)
+    elif(res.status_code == 404):
+        sendErrorMail(res.text, "SBV file is uploaded without a class")
     else:
         sendErrorMail("Error Occured in uploading a file", res.text)
         return
