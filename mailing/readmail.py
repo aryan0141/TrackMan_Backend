@@ -109,7 +109,7 @@ def readMail(imap, lst, i):
                                 continue
                             else:
                                 sendPOSTRequest(
-                                    filename, extractTeachersEmail(From))
+                                    updatedFilename, extractTeachersEmail(From))
 
             print("="*100)
 
